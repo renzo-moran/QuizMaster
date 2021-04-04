@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">Quiz Master</string>
+
+    <string name="open">Open</string>
+    <string name="close">Close</string>
+    <string name="menu_option_1">Start History Quiz</string>
+    <string name="menu_option_2">Start Math Quiz</string>
+    <string name="menu_option_3">Settings</string>
+    <string name="menu_option_4">Statistics</string>
+    <string name="fragment_1_title">Fragment 1</string>
+    <string name="fragment_2_title">Fragment 2</string>
+    <string name="fragment_3_title">Fragment 3</string>
+    <string name="fragment_4_title">Fragment 4</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+</resources>

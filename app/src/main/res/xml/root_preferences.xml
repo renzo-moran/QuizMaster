@@ -1,0 +1,19 @@
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory app:title="@string/game_play_header">
+
+        <SwitchPreferenceCompat
+            app:key="saveOnClose"
+            app:title="@string/save_game_title" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="@string/appearance_header">
+
+        <SwitchPreferenceCompat
+            app:key="darkTheme"
+            app:title="@string/dark_theme_title" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

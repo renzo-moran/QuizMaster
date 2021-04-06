@@ -13,5 +13,16 @@
     <string name="fragment_4_title">Fragment 4</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_settings">SettingsActivity</string>
+
+    <!-- Preferences Section Titles -->
+    <string name="game_play_header">Game Play</string>
+    <string name="appearance_header">Appearance</string>
+
+    <!-- Game Play Preferences -->
+    <string name="save_game_title">Save game on close</string>
+
+    <!-- Appearance Preferences -->
+    <string name="dark_theme_title">Dark theme</string>
 
 </resources>

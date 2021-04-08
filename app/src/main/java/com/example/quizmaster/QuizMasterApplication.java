@@ -24,7 +24,7 @@ public class QuizMasterApplication extends Application {
                     quiz_type: TF(True / False), MC(Multi Choice), WORDS(write words)
                 */
 
-                toast.show();
+                //toast.show();
                 db.execSQL("CREATE TABLE IF NOT EXISTS tbl_quiz(" +
                         "quz_no INTEGER, quiz_category TEXT, quie_type TEXT, quiz_text TEXT, option1 TEXT, " +
                         "option2 TEXT, option3 TEXT, option4 TEXT, answer TEXT )");
@@ -47,7 +47,7 @@ public class QuizMasterApplication extends Application {
     }
 
     public void insertQuiz(){
-        Toast.makeText(this, "Insert Quiz", Toast.LENGTH_LONG).show();
+        //Toast.makeText(this, "Insert Quiz", Toast.LENGTH_LONG).show();
         SQLiteDatabase db =  helper.getReadableDatabase();
         Cursor cursor = db.rawQuery(
                 "SELECT COUNT(*) AS COUNT " +

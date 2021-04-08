@@ -4,6 +4,7 @@ import android.app.Application;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.widget.Toast;
 
 public class QuizMasterApplication extends Application {
 
@@ -14,15 +15,16 @@ public class QuizMasterApplication extends Application {
 
     @Override
     public void onCreate() {
-
+        final Toast toast = Toast.makeText(this, "Apoplication Start onCreate!!!!!!!", Toast.LENGTH_LONG);
         helper = new SQLiteOpenHelper(this, DB_NAME, null, DB_VERSION) {
             @Override
             public void onCreate(SQLiteDatabase db) {
                 /*
                     quiz_category: math, history
                     quiz_type: TF(True / False), MC(Multi Choice), WORDS(write words)
-                 */
+                */
 
+                toast.show();
                 db.execSQL("CREATE TABLE IF NOT EXISTS tbl_quiz(" +
                         "quz_no INTEGER, quiz_category TEXT, quie_type TEXT, quiz_text TEXT, option1 TEXT, " +
                         "option2 TEXT, option3 TEXT, option4 TEXT, answer TEXT )");
@@ -31,7 +33,7 @@ public class QuizMasterApplication extends Application {
                         "quiz_category TEXT, correct_answer INTEGER, wrong_answer INTEGER, " +
                         "skip_answer INTEGER, answer_time REAL, score REAL, answer_current_date )");
 
-                insertQuizes();
+                //insertQuiz();
 
             }
 
@@ -40,11 +42,12 @@ public class QuizMasterApplication extends Application {
                 //No Operation
             }
         };
+
         super.onCreate();
     }
 
-    private void insertQuizes(){
-
+    public void insertQuiz(){
+        Toast.makeText(this, "Insert Quiz", Toast.LENGTH_LONG).show();
         SQLiteDatabase db =  helper.getReadableDatabase();
         Cursor cursor = db.rawQuery(
                 "SELECT COUNT(*) AS COUNT " +
@@ -69,9 +72,7 @@ public class QuizMasterApplication extends Application {
             db.execSQL("INSERT INTO tbl_quiz VALUES (" +
                     "7,'history','MC','Which of these peoples once ruled Norway?','Vikings','Aztecs','Irish', 'Romans', 'Vikings')");
             db.execSQL("INSERT INTO tbl_quiz VALUES (" +
-                    "8,'history','MC','Which of these peoples once ruled Norway?','Vikings','Aztecs','Irish', 'Romans', 'Vikings')");
-            db.execSQL("INSERT INTO tbl_quiz VALUES (" +
-                    "9,'history','MC','Which of these nations was neutral in World War I?','England','Germany','Italy', 'Norway', 'Norway')");
+                    "8,'history','MC','Which of these nations was neutral in World War I?','England','Germany','Italy', 'Norway', 'Norway')");
 
 
 

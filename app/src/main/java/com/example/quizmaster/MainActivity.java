@@ -30,6 +30,8 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+
         super.onCreate(savedInstanceState);
         creatingActivity = true;
 
@@ -46,6 +48,8 @@ public class MainActivity extends AppCompatActivity {
             setTheme(R.style.AppTheme);
 
         setContentView(R.layout.activity_main);
+
+        ((QuizMasterApplication)getApplication()).insertQuiz();
 
         // Preparation for setting the Navigation Drawer
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);

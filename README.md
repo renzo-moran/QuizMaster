@@ -2,6 +2,6 @@
 PROG3210 Group Project - Quiz Master
 
 Collaborators:
-- Jisu Ok (hello)
+- Jisu Ok
 - Jiyoung Jung
 - Renzo Moran

@@ -1,5 +1,12 @@
 <resources>
     <string name="app_name">Quiz Master</string>
+    <string name="exit">End Quiz</string>
+    <string name="skip">Skip Question</string>
+    <string name="answer">Answer and Next</string>
+    <string name="option1">option1</string>
+    <string name="option2">option2</string>
+    <string name="option3">option3</string>
+    <string name="option4">option4</string>
 
     <string name="exit">End Quiz</string>
     <string name="skip">Skip Question</string>
@@ -32,5 +39,11 @@
 
     <!-- Appearance Preferences -->
     <string name="dark_theme_title">Dark theme</string>
+    <string name="title_activity_history">history</string>
+    <!--
+    This string is used for square devices and overridden by hello_world in
+    values-round/strings.xml for round devices.
+    -->
+    <string name="hello_world">Hello Square World!</string>
 
 </resources>

@@ -46,4 +46,12 @@
         <item name="listPreferredItemPaddingRight">8dp</item>
     </style>
 
+    <style name="ButtonWith3DText" parent="@style/Widget.AppCompat.Button">
+        <item name="android:shadowColor">#ffffff</item>
+        <item name="android:shadowDx">3</item>
+        <item name="android:shadowDy">3</item>
+        <item name="android:shadowRadius">5</item>
+        <item name="android:textAllCaps">false</item>
+    </style>
+
 </resources>

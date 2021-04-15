@@ -72,13 +72,14 @@ public class MainActivity extends AppCompatActivity {
                 Fragment frag = null;
                 switch (item.getItemId()) {
                     case R.id.history_quiz:
-                        frag = new HistoryQuizFragment();
+                        //frag = new HistoryQuizFragment();
+                        startActivity(new Intent(getApplicationContext(), HistoryQuizActivity.class));
                         break;
                     case R.id.math_quiz:
-                        frag = new MathQuizFragment();
+                        //frag = new MathQuizFragment();
+                        startActivity(new Intent(getApplicationContext(), MathQuizActivity.class));
                         break;
                     case R.id.settings:
-                        //frag = new SettingsFragment();
                         startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
                         break;
                     case R.id.statistics:

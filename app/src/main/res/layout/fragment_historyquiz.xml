@@ -6,12 +6,9 @@
     android:layout_height="match_parent"
     tools:context="com.example.quizmaster.HistoryQuizFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="99dp"
-        android:gravity="center"
-        android:text="@string/fragment_1_title"
-        android:textSize="25sp" />
+        android:layout_height="match_parent">
 
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>

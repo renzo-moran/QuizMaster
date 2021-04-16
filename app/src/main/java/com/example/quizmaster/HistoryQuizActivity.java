@@ -12,6 +12,7 @@ import android.view.MenuItem;
 public class HistoryQuizActivity extends AppCompatActivity {
 
     private SharedPreferences sharedPref; // Will hold the SharedPreferences object
+    private boolean quizInProgress = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +32,16 @@ public class HistoryQuizActivity extends AppCompatActivity {
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
+
+        if (!quizInProgress) {
+            // TODO: Show a countdown before starting the quiz or have the user press a button
+            startQuiz();
+        }
+    }
+
+    // Does all the required intializations to start a quicks and proceeds to start it
+    private void startQuiz() {
+        // Here:
     }
 
     @Override

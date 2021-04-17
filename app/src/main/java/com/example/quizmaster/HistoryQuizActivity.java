@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.Timer;
@@ -17,13 +18,16 @@ import java.util.TimerTask;
 public class HistoryQuizActivity extends AppCompatActivity {
 
     public final int REFRESH_INTERVAL = 500;
+    public final int TOTAL_QUESTIONS = 10;  // Number of questions of the quiz
 
     private SharedPreferences sharedPref; // Will hold the SharedPreferences object
     private boolean quizInProgress = false;
     private QuizTimer quizTimer;  // Will control the elapsed time of the quiz
     private Timer refreshTimer;   // Will be used to periodically refresh the GUI as needed
+    private QuestionManager questionManager;  // Will manage the quiz questions
 
     private Button btnTime;
+    private TextView textViewQuestion;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +45,7 @@ public class HistoryQuizActivity extends AppCompatActivity {
 
         // Instantiate the views
         btnTime = (Button)findViewById(R.id.btnTime);
+        textViewQuestion = (TextView)findViewById(R.id.textViewQuestion);
 
         // Create the refresh timer and set its callback
         refreshTimer = new Timer(true);
@@ -66,6 +71,18 @@ public class HistoryQuizActivity extends AppCompatActivity {
             // TODO: Show a countdown before starting the quiz or have the user press a button
             startQuiz();
             displayElapsedTime();
+
+            // Display next question and alternatives
+            String question = questionManager.getNextQuestion();
+            if (question == "") {
+                // No more questions - TODO: finish the game
+            }
+            else {
+                textViewQuestion.setText(question);
+
+                // TODO: Depending on type of question, display the answer GUIs
+
+            }
         }
     }
 
@@ -73,6 +90,8 @@ public class HistoryQuizActivity extends AppCompatActivity {
     private void startQuiz() {
         quizTimer = new QuizTimer();
         quizTimer.startTimeKeeping();
+
+        questionManager = new QuestionManager(TOTAL_QUESTIONS);
 
         quizInProgress = true;
     }

@@ -22,6 +22,7 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_settings">SettingsActivity</string>
+    <string name="title_activity_statistics">StatisticsActivity</string>
 
     <!-- Preferences Section Titles -->
     <string name="game_play_header">Game Play</string>
@@ -38,5 +39,16 @@
     values-round/strings.xml for round devices.
     -->
     <string name="hello_world">Hello Square World!</string>
+
+
+    <!-- Statistics Titles -->
+    <string name="statistics_radio_history">History</string>
+    <string name="statistics_radio_math">Math</string>
+    <string name="statistics_left_last">Last day</string>
+    <string name="statistics_left_all">All time</string>
+    <string name="statistics_top_quizzes">All Quizzes</string>
+    <string name="statistics_top_solved">Solved Ratio</string>
+    <string name="statistics_top_avgTime">Ave. Time</string>
+    <string name="statistics_top_avgScore">Ave. Score</string>
 
 </resources>

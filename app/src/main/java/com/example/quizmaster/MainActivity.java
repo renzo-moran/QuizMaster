@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
                         startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
                         break;
                     case R.id.statistics:
-                        frag = new StatisticsFragment();
+                        startActivity(new Intent(getApplicationContext(), StatsActivity.class));
                         break;
                 }
 

@@ -27,23 +27,24 @@
                 android:paddingLeft="50dp">
 
                 <RadioGroup
+                    android:id="@+id/rdbGroup"
                     android:layout_width="250dp"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
 
                     <RadioButton
-                        android:id="@+id/radioButton5"
+                        android:id="@+id/rdbHistory"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="RadioButton" />
+                        android:text="@string/statistics_radio_history" />
 
                     <RadioButton
-                        android:id="@+id/radioButton6"
+                        android:id="@+id/rdbMath"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="RadioButton" />
+                        android:text="@string/statistics_radio_math" />
                 </RadioGroup>
             </TableRow>
 
@@ -55,45 +56,54 @@
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:layout_marginBottom="80dp"
-            android:background="#2196F3">
+            android:background="#8F9CCBF1">
 
             <TableRow
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:textAlignment="textEnd">
 
                 <TextView
                     android:id="@+id/textView9"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="30dp"
                     android:layout_weight="1" />
 
                 <TextView
                     android:id="@+id/textView12"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="30dp"
                     android:layout_weight="1"
-                    android:text="@string/statistics_top_quizzes" />
+                    android:gravity="center"
+                    android:text="@string/statistics_top_quizzes"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/textView13"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="30dp"
                     android:layout_weight="1"
-                    android:text="@string/statistics_top_solved" />
+                    android:gravity="center"
+                    android:text="@string/statistics_top_solved"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/textView10"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="30dp"
                     android:layout_weight="1"
-                    android:text="@string/statistics_top_avgTime" />
+                    android:gravity="center"
+                    android:text="@string/statistics_top_avgTime"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/textView11"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="30dp"
                     android:layout_weight="1"
-                    android:text="@string/statistics_top_avgScore" />
+                    android:gravity="center"
+                    android:text="@string/statistics_top_avgScore"
+                    android:textStyle="bold" />
             </TableRow>
 
             <TableRow
@@ -103,33 +113,38 @@
                 <TextView
                     android:id="@+id/textView17"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="30dp"
                     android:layout_weight="1"
+                    android:gravity="center"
                     android:text="@string/statistics_left_last" />
 
                 <TextView
-                    android:id="@+id/txtLastAllQuiz"
+                    android:id="@+id/txtLastPlayed"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1" />
+                    android:layout_height="30dp"
+                    android:layout_weight="1"
+                    android:gravity="center" />
 
                 <TextView
-                    android:id="@+id/textView18"
+                    android:id="@+id/txtLastRatio"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1" />
+                    android:layout_height="30dp"
+                    android:layout_weight="1"
+                    android:gravity="center" />
 
                 <TextView
-                    android:id="@+id/textView14"
+                    android:id="@+id/txtLastAvgTime"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1" />
+                    android:layout_height="30dp"
+                    android:layout_weight="1"
+                    android:gravity="center" />
 
                 <TextView
-                    android:id="@+id/textView16"
+                    android:id="@+id/txtLastAvgScore"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1" />
+                    android:layout_height="30dp"
+                    android:layout_weight="1"
+                    android:gravity="center" />
             </TableRow>
 
             <TableRow
@@ -139,33 +154,38 @@
                 <TextView
                     android:id="@+id/textView22"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="30dp"
                     android:layout_weight="1"
+                    android:gravity="center"
                     android:text="@string/statistics_left_all" />
 
                 <TextView
-                    android:id="@+id/textView19"
+                    android:id="@+id/txtAllPlayed"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1" />
+                    android:layout_height="30dp"
+                    android:layout_weight="1"
+                    android:gravity="center" />
 
                 <TextView
-                    android:id="@+id/textView21"
+                    android:id="@+id/txtAllRatio"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1" />
+                    android:layout_height="30dp"
+                    android:layout_weight="1"
+                    android:gravity="center" />
 
                 <TextView
-                    android:id="@+id/textView23"
+                    android:id="@+id/txtAllAvgTime"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1" />
+                    android:layout_height="30dp"
+                    android:layout_weight="1"
+                    android:gravity="center" />
 
                 <TextView
-                    android:id="@+id/textView20"
+                    android:id="@+id/txtAllAvgScore"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1" />
+                    android:layout_height="30dp"
+                    android:layout_weight="1"
+                    android:gravity="center" />
             </TableRow>
 
         </TableLayout>

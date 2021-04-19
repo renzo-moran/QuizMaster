@@ -27,7 +27,7 @@ public class QuizMasterApplication extends Application {
                     quiz_type: TF(True / False), MC(Multi Choice), WORDS(write words)
                 */
 
-                toast.show();
+                //toast.show();
                 db.execSQL("CREATE TABLE IF NOT EXISTS tbl_quiz_questions(" +
                         "quest_no INTEGER, quest_category TEXT, quest_type TEXT, quest_text TEXT, option1 TEXT, " +
                         "option2 TEXT, option3 TEXT, option4 TEXT, answer TEXT )");
@@ -50,7 +50,7 @@ public class QuizMasterApplication extends Application {
     }
 
     public void insertQuiz(){
-        Toast.makeText(this, "Insert Quiz", Toast.LENGTH_LONG).show();
+        //Toast.makeText(this, "Insert Quiz", Toast.LENGTH_LONG).show();
         SQLiteDatabase db =  helper.getReadableDatabase();
         Cursor cursor = db.rawQuery(
                 "SELECT COUNT(*) AS COUNT " +
@@ -221,61 +221,70 @@ public class QuizMasterApplication extends Application {
         );
     }
 
-    public void addResult(String category, int correct, float time, float score){
-        SQLiteDatabase db =  helper.getWritableDatabase();
 
-        //1: Tie, 2: Lose, 3:Win
-
-        db.execSQL("INSERT INTO tbl_result VALUES (" +
-                category + "," + correct + "," + time + "," + score + "," + correct * 100 / time +
-                ", " + Math.round(System.currentTimeMillis() / 1000.0)+")");
-
-
-    }
-
-    public void updateResult(){
-
-    }
-
-    public String getSumLastCount(){
+    public HashMap getStats(String category){
         SQLiteDatabase db =  helper.getReadableDatabase();
-        Cursor cursor = db.rawQuery(
-                "SELECT SUM(lastTie) AS LTIE, SUM(lastLose) AS LLOSE, SUM(lastWin) AS LWIN " +
-                        "FROM tbl_result", null);
+        HashMap rtnMap = new HashMap();
+        Cursor cursor_last = db.rawQuery(
+                "SELECT COUNT(*) AS COUNT, SUM(correct_answer) AS CORRECT, AVG(elapsed_time) AS TIME, " +
+                        " AVG(score) AS SCORE FROM tbl_quiz_result WHERE quiz_category = '" + category + "' AND time_stamp > " +
+                        (System.currentTimeMillis()/1000 - 24*60*60), null);
 
-        int tie;
-        int lose;
-        int win;
-        cursor.moveToFirst();
-        tie = cursor.getInt(0);
-        lose = cursor.getInt(1);
-        win = cursor.getInt(2);
-        cursor.close();
+        Cursor cursor_all = db.rawQuery(
+                "SELECT COUNT(*) AS COUNT, SUM(correct_answer) AS CORRECT, AVG(elapsed_time) AS TIME, " +
+                        " AVG(score) AS SCORE FROM tbl_quiz_result WHERE quiz_category = '" + category + "'", null);
 
-        return(win + "-" + lose + "-" + tie );
-    }
+        int last_num_quiz_set;
+        int last_num_correct;
+        int last_avg_elapsed_time;
+        double last_avg_score;
+        int all_num_quiz_set;
+        int all_num_correct;
+        int all_avg_elapsed_time;
+        double all_avg_score;
 
-    public String getSumAllCount(){
-        SQLiteDatabase db =  helper.getReadableDatabase();
-        Cursor cursor = db.rawQuery(
-                "SELECT SUM(allTie) AS ATIE, SUM(allLose) AS ALOSE, SUM(allWin) AS AWIN FROM tbl_stats", null);
+        cursor_last.moveToFirst();
+        cursor_all.moveToFirst();
+        last_num_quiz_set = cursor_last.getInt(0);
+        last_num_correct = cursor_last.getInt(1);
+        last_avg_elapsed_time = cursor_last.getInt(2);
+        last_avg_score = cursor_last.getDouble(3);
+        all_num_quiz_set = cursor_all.getInt(0);
+        all_num_correct = cursor_all.getInt(1);
+        all_avg_elapsed_time = cursor_all.getInt(2);
+        all_avg_score = cursor_all.getDouble(3);
 
-        int tie;
-        int lose;
-        int win;
-        cursor.moveToFirst();
-        tie = cursor.getInt(0);
-        lose = cursor.getInt(1);
-        win = cursor.getInt(2);
-        cursor.close();
+        int last_ratio = 0;
+        int all_ratio = 0;
+        if(last_num_quiz_set == 0)
+            last_ratio = 0;
+        else
+            last_ratio = Math.round(last_num_correct/last_num_quiz_set);
 
-        return(win + "-" + lose + "-" + tie );
+        if(all_num_quiz_set == 0)
+            all_ratio = 0;
+        else
+            all_ratio = Math.round(all_num_correct/all_num_quiz_set);
+
+        rtnMap.put("LAST_PLAYED", last_num_quiz_set * 10);
+        rtnMap.put("LAST_RATIO", last_ratio);
+        rtnMap.put("LAST_AVG_TIME", last_avg_elapsed_time);
+        rtnMap.put("LAST_AVG_SCORE", Math.round(last_avg_score));
+        rtnMap.put("ALL_PLAYED", all_num_quiz_set * 10);
+        rtnMap.put("ALL_RATIO", all_ratio);
+        rtnMap.put("ALL_AVG_TIME", all_avg_elapsed_time);
+        rtnMap.put("ALL_AVG_SCORE", Math.round(all_avg_score));
+
+        cursor_last.close();
+        cursor_all.close();
+
+        return rtnMap;
     }
 
     public void resetTableStats(){
         SQLiteDatabase db = helper.getWritableDatabase();
 
-        db.execSQL("DELETE FROM tbl_stats");
+        db.execSQL("DELETE FROM tbl_quiz_result");
     }
 
     /**

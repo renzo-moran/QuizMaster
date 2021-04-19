@@ -6,12 +6,14 @@
     android:layout_height="match_parent"
     tools:context=".StatsActivity">
 
+
     <LinearLayout
+        android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
         tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="-107dp">
+        tools:layout_editor_absoluteY="215dp">
 
         <TableLayout
             android:layout_width="match_parent"
@@ -189,5 +191,28 @@
             </TableRow>
 
         </TableLayout>
+
+        <androidx.coordinatorlayout.widget.CoordinatorLayout
+            android:layout_width="match_parent"
+            android:layout_height="75dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginTop="100dp"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/floatButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="#673AB7"
+                android:contentDescription="End Quiz"
+                android:src="@drawable/ic_baseline_close_24"
+                android:text="Quit Quiz"
+                android:textAllCaps="true"
+                android:textColor="#FFFFFF"
+                app:backgroundTint="@color/lightAccent"
+                app:fabSize="normal"
+                app:icon="@drawable/ic_baseline_close_24" />
+        </androidx.coordinatorlayout.widget.CoordinatorLayout>
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

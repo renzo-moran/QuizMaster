@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         creatingActivity = true;
 
-        PreferenceManager.setDefaultValues(this, R.xml.root_preferences, false);
+        //PreferenceManager.setDefaultValues(this, R.xml.root_preferences, false);
         sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
 
         darkTheme = sharedPref.getBoolean("darkTheme", false);
@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
 
         ((QuizMasterApplication)getApplication()).insertQuiz();
 
-        // Preparation for setting the Navigation Drawer
+        PreferenceManager.setDefaultValues(this, R.xml.root_preferences, false);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mToggle = new ActionBarDrawerToggle (this, mDrawerLayout, R.string.open, R.string.close);
         mDrawerLayout.addDrawerListener(mToggle);
@@ -162,5 +162,11 @@ public class MainActivity extends AppCompatActivity {
         builder.setTitle(title);
         builder.setMessage(messageContent);
         builder.show();
+    }
+
+    @Override
+    protected void onStop() {
+        startService(new Intent(getApplicationContext(), NotificationService.class));
+        super.onStop();
     }
 }

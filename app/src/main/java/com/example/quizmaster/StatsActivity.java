@@ -14,6 +14,9 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
+
 import java.util.HashMap;
 
 public class StatsActivity extends AppCompatActivity {
@@ -29,11 +32,14 @@ public class StatsActivity extends AppCompatActivity {
     private TextView txtAllRatio;
     private TextView txtAllAvgTime;
     private TextView txtAllAvgScore;
+    private FloatingActionButton fab;
 
     private SharedPreferences sharedPref; // Will hold the SharedPreferences object
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+
 
         //PreferenceManager.setDefaultValues(this, R.xml.root_preferences, false);
         sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
@@ -52,6 +58,15 @@ public class StatsActivity extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
+        fab = findViewById(R.id.floatButton);
+
+        fab.setOnClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View v) {
+                StatsActivity.super.onBackPressed();
+            }
+        });
         rdbGroup = (RadioGroup) findViewById(R.id.rdbGroup);
         rdbHistory = (RadioButton) findViewById(R.id.rdbHistory);
         rdbMath = (RadioButton)findViewById(R.id.rdbMath);
@@ -64,30 +79,69 @@ public class StatsActivity extends AppCompatActivity {
         txtAllAvgTime = findViewById(R.id.txtAllAvgTime);
         txtAllAvgScore = findViewById(R.id.txtAllAvgScore);
 
+        rdbHistory.setChecked(true);
+        setStatistics("history");
+        View parentLayout = findViewById(android.R.id.content);
+        Snackbar.make(parentLayout, "This is main activity", Snackbar.LENGTH_LONG)
+                .setAction("CLOSE", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                    }
+                })
+                .setActionTextColor(getResources().getColor(android.R.color.holo_red_light ))
+                .show();
+
         rdbGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 HashMap statsMap = new HashMap();
                 if(rdbHistory.isChecked()) {
-                    statsMap = ((QuizMasterApplication)getApplication()).getStats("history");
+
+                    Snackbar.make(findViewById(android.R.id.content), "History Statistics", Snackbar.LENGTH_LONG)
+                            .setAction("CLOSE", new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+
+                                }
+                            })
+                            .setActionTextColor(getResources().getColor(android.R.color.holo_red_light ))
+                            .show();
+
+                    setStatistics("history");
                 }else if(rdbMath.isChecked()) {
-                    statsMap = ((QuizMasterApplication)getApplication()).getStats("math");
+
+                    Snackbar.make(findViewById(android.R.id.content), "Math Statistics", Snackbar.LENGTH_LONG)
+                            .setAction("CLOSE", new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+
+                                }
+                            })
+                            .setActionTextColor(getResources().getColor(android.R.color.holo_red_light ))
+                            .show();
+                    setStatistics("math");
                 }
-
-                txtLastPlayed.setText(statsMap.get("LAST_PLAYED").toString());
-                txtLastRatio.setText(statsMap.get("LAST_RATIO").toString());
-                txtLastAvgTime.setText(statsMap.get("LAST_AVG_TIME").toString());
-                txtLastAvgScore.setText(statsMap.get("LAST_AVG_SCORE").toString());
-                txtAllPlayed.setText(statsMap.get("ALL_PLAYED").toString());
-                txtAllRatio.setText(statsMap.get("ALL_RATIO").toString());
-                txtAllAvgTime.setText(statsMap.get("ALL_AVG_TIME").toString());
-                txtAllAvgScore.setText(statsMap.get("ALL_AVG_SCORE").toString());
-
             }
         });
 
     }
+    private void setStatistics(String category){
+        HashMap statsMap = new HashMap();
 
+        statsMap = ((QuizMasterApplication)getApplication()).getStats(category);
+
+
+        txtLastPlayed.setText(statsMap.get("LAST_PLAYED").toString());
+        txtLastRatio.setText(statsMap.get("LAST_RATIO").toString());
+        txtLastAvgTime.setText(statsMap.get("LAST_AVG_TIME").toString());
+        txtLastAvgScore.setText(statsMap.get("LAST_AVG_SCORE").toString());
+        txtAllPlayed.setText(statsMap.get("ALL_PLAYED").toString());
+        txtAllRatio.setText(statsMap.get("ALL_RATIO").toString());
+        txtAllAvgTime.setText(statsMap.get("ALL_AVG_TIME").toString());
+        txtAllAvgScore.setText(statsMap.get("ALL_AVG_SCORE").toString());
+
+    }
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         boolean ret = true;

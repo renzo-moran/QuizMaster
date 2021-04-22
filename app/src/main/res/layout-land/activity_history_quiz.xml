@@ -14,7 +14,7 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/textView3"
+            android:id="@+id/textViewQuestionNumber"
             android:layout_width="640dp"
             android:layout_height="35dp"
             android:layout_margin="50dp"
@@ -53,7 +53,7 @@
             android:layout_height="74dp"
             android:layout_gravity="right"
             android:layout_marginLeft="50dp"
-            app:srcCompat="@drawable/smile" />
+            app:srcCompat="@drawable/question" />
     </LinearLayout>
 
     <LinearLayout
@@ -62,7 +62,7 @@
         android:orientation="horizontal">
 
         <RadioButton
-            android:id="@+id/radioButton"
+            android:id="@+id/rdbOption1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="100dp"
@@ -70,20 +70,20 @@
             android:text="@string/option1" />
 
         <RadioButton
-            android:id="@+id/radioButton3"
+            android:id="@+id/rdbOption3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/option2" />
 
         <RadioButton
-            android:id="@+id/radioButton4"
+            android:id="@+id/rdbOption4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="50dp"
             android:text="@string/option3" />
 
         <RadioButton
-            android:id="@+id/radioButton2"
+            android:id="@+id/rdbOption2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="50dp"
@@ -97,7 +97,7 @@
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/button3"
+            android:id="@+id/btnSkip"
             style="@style/ButtonWith3DText"
             android:layout_width="131dp"
             android:layout_height="65dp"
@@ -107,7 +107,7 @@
             android:text="@string/skip" />
 
         <Button
-            android:id="@+id/button2"
+            android:id="@+id/btnAnswer"
             style="@style/ButtonWith3DText"
             android:layout_width="131dp"
             android:layout_height="65dp"
@@ -118,7 +118,7 @@
             android:text="@string/answer" />
 
         <Button
-            android:id="@+id/button4"
+            android:id="@+id/btnEnd"
             style="@style/ButtonWith3DText"
             android:layout_width="131dp"
             android:layout_height="65dp"

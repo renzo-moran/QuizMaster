@@ -1,27 +1,38 @@
 package com.example.quizmaster;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 public class QuestionManager {
-    private int totalQuestions;
-    private int currentQuestion;
+    private QuizMasterApplication application;  // The application object
+    private String quizType;  // "history" or "math"
+    private ArrayList<HashMap> questionList;  // The list of selected questions for the quiz
+    private int currentQuestion;  // Number of the current question - initially 0
 
-    public QuestionManager(int numberOfQuestions) {
-        // TODO: Add a parameter to define type of questions: History or Math
+    public QuestionManager(QuizMasterApplication application, String quizType, int maxQuestions) {
+        this.application = application;
+        this.quizType = quizType;
+        questionList = new ArrayList<HashMap>();
 
-        totalQuestions = numberOfQuestions > 0 ? numberOfQuestions : 0;
-        // TODO: Use database method to retrieve questions from database
+        if (maxQuestions > 0)
+        questionList = maxQuestions > 0 ? application.getQuizzes("history")  // TODO: Be able to pass max number of questions to this method
+                                        : null;
 
         currentQuestion = 0;
     }
 
-    public String getNextQuestion() {
-        if (currentQuestion == totalQuestions) {
-            return "";  // TODO: change this based on the object that will be returned
+    public HashMap getNextQuestion() {
+        if (currentQuestion == questionList.size()) {
+            return null;  // No more questions available
         }
+
+        HashMap nextQuestionHashMap = (HashMap)questionList.get(currentQuestion);
         currentQuestion++;
-        return "What is the Roman name of Greece's Zeus?"; // TODO: change this using the array of questions
+        return nextQuestionHashMap;
     }
 
-    public String getAnswer() {
-        return "Jupiter";
+    // Getter for the number of current question - starting with 1
+    public int getCurrentQuestion() {
+        return currentQuestion-1;
     }
 }

@@ -26,6 +26,8 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
+import android.widget.Button;
+
 
 public class HistoryQuizActivity extends AppCompatActivity {
 
@@ -47,6 +49,7 @@ public class HistoryQuizActivity extends AppCompatActivity {
     private TextView textViewQuestion;
     private RadioButton rdbOption1, rdbOption2, rdbOption3, rdbOption4;
     private Button btnSkip, btnAnswer, btnEnd;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

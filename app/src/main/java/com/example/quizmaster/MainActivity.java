@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         creatingActivity = true;
 
-        //PreferenceManager.setDefaultValues(this, R.xml.root_preferences, false);
+        PreferenceManager.setDefaultValues(this, R.xml.root_preferences, false);
         sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
 
         darkTheme = sharedPref.getBoolean("darkTheme", false);
@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
 
         ((QuizMasterApplication)getApplication()).insertQuiz();
 
-        PreferenceManager.setDefaultValues(this, R.xml.root_preferences, false);
+        //PreferenceManager.setDefaultValues(this, R.xml.root_preferences, false);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mToggle = new ActionBarDrawerToggle (this, mDrawerLayout, R.string.open, R.string.close);
         mDrawerLayout.addDrawerListener(mToggle);

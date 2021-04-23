@@ -46,7 +46,7 @@
     <string name="statistics_radio_math">Math</string>
     <string name="statistics_left_last">Last day</string>
     <string name="statistics_left_all">All time</string>
-    <string name="statistics_top_quizzes">All Quizzes</string>
+    <string name="statistics_top_quizzes">Quizzes</string>
     <string name="statistics_top_solved">Solved Ratio</string>
     <string name="statistics_top_avgTime">Ave. Time</string>
     <string name="statistics_top_avgScore">Ave. Score</string>

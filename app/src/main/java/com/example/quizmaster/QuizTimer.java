@@ -43,4 +43,20 @@ public class QuizTimer {
         }
         return elapsedTime;
     }
+
+    // Returns the elapsed time as a string in the format "hh:mm:ss" since the start of the time keeping
+    public String getElapsedTimeHHMMSS() {
+        int elapsedTimeInSeconds = (int)(getElapsedTime()/1000);  // Quiz elapsed time in milliseconds
+
+        // Express the elapsed time in hours, minutes and seconds
+        int hoursElapsedTime = elapsedTimeInSeconds/3600;
+        int remainderMinutes = elapsedTimeInSeconds % 3600;
+        int minutesElapsedTime = remainderMinutes/60;
+        int secondsElapsedTime = remainderMinutes % 60;
+
+        // Display the time
+        String timeString = String.format("%02d:%02d:%02d", hoursElapsedTime, minutesElapsedTime, secondsElapsedTime);
+        return timeString;
+    }
+
 }

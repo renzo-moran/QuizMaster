@@ -163,10 +163,4 @@ public class MainActivity extends AppCompatActivity {
         builder.setMessage(messageContent);
         builder.show();
     }
-
-    @Override
-    protected void onStop() {
-        startService(new Intent(getApplicationContext(), NotificationService.class));
-        super.onStop();
-    }
 }

@@ -35,7 +35,7 @@ public class QuizMasterApplication extends Application {
                         "option2 TEXT, option3 TEXT, option4 TEXT, answer TEXT )");
 
                 db.execSQL("CREATE TABLE IF NOT EXISTS tbl_quiz_result(" +
-                        "quiz_category TEXT, correct_answer INTEGER, elapsed_time REAL, score REAL, time_stamp REAL)");
+                        "quiz_category TEXT, correct_answer INTEGER, elapsed_time REAL, score INTEGER, time_stamp REAL)");
 
 
                 //insertQuiz();
@@ -300,7 +300,9 @@ public class QuizMasterApplication extends Application {
 
         int score = getScore(correct_answer, elapsedTime);
 
-        db.execSQL("INSERT INTO tbl_quiz_result VALUES('" + quizCategory + "', "+ correct_answer + ", " + elapsedTime + "," + score + ", " + System.currentTimeMillis());
+        String query = "INSERT INTO tbl_quiz_result VALUES('" + quizCategory + "', "+ correct_answer + ", " + elapsedTime + "," + score + ", " + System.currentTimeMillis() + ")";
+
+        db.execSQL(query);
     }
 
     // Returns the score corresponding to the parameters

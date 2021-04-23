@@ -6,42 +6,41 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.PreferenceManager;
 
-import android.annotation.SuppressLint;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.RadioButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.material.snackbar.Snackbar;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
-import android.widget.Button;
 
 
 public class HistoryQuizActivity extends AppCompatActivity {
 
-    public final int REFRESH_INTERVAL = 500;
+    public final int REFRESH_INTERVAL = 500; // Interval to refresh elapsed time, in milliseconds
     public final int MAX_QUESTIONS = 10;  // Maximum number of questions of the quiz
+    public final String QUIZ_TYPE = "history";
+    public final String HIGHEST_SCORE_KEY = "historyHighestScore";
 
+    private QuizMasterApplication quizApplication;  // The application object
     private SharedPreferences sharedPref; // Will hold the SharedPreferences object
     private boolean quizInProgress = false;
     private QuizTimer quizTimer;  // Will control the elapsed time of the quiz
     private Timer refreshTimer;   // Will be used to periodically refresh the GUI as needed
     private QuestionManager questionManager;  // Will manage the quiz questions
     private HashMap questionHashMap;  // HashMap of current question
-    private int score; // Number of correct questions
+    private int correctAnswers; // Number of correct answers
     private String playerAnswer;  // The player's answer to current question
+    private int highestScore; // Highest score that is saved for this type of quiz
 
     // Views of the GUI
     private TextView textViewQuestionNumber;
@@ -53,6 +52,7 @@ public class HistoryQuizActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        quizApplication = (QuizMasterApplication)getApplication();
         PreferenceManager.setDefaultValues(this, R.xml.root_preferences, false);
         sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
 
@@ -68,6 +68,9 @@ public class HistoryQuizActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history_quiz);
+
+        // Obtain the highest score saved for this type of quiz
+        highestScore = sharedPref.getInt(HIGHEST_SCORE_KEY, 0);
 
         // Instantiate the views
         textViewQuestionNumber = (TextView)findViewById(R.id.textViewQuestionNumber);
@@ -145,8 +148,7 @@ public class HistoryQuizActivity extends AppCompatActivity {
             public void onClick(View v) {
                 // Check if an answer was effectively selected
                 if (playerAnswer.isEmpty()) {
-                    //Toast.makeText(getApplicationContext(),"Answer was not provided", Toast.LENGTH_SHORT).show();
-                    Snackbar.make(findViewById(android.R.id.content), "Answer was not provided", Snackbar.LENGTH_SHORT)
+                    Snackbar.make(findViewById(android.R.id.content), "Please, select an answer", Snackbar.LENGTH_SHORT)
                             .setAction("OK", new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
@@ -157,9 +159,13 @@ public class HistoryQuizActivity extends AppCompatActivity {
                             .show();
                 }
                 else {
-                    // Add the point to the user if response is correct
+                    // Increase the correct answers counter if response is correct
                     if (playerAnswer.equals(questionHashMap.get("quest_option5").toString())) {
-                        score++;
+                        // TODO: Display happy face animation
+                        correctAnswers++;
+                    }
+                    else {
+                        // TODO: Display sad face animation
                     }
                     // Get next question and show it or finish the game if no more questions
                     questionHashMap = questionManager.getNextQuestion();
@@ -197,26 +203,6 @@ public class HistoryQuizActivity extends AppCompatActivity {
                                 quizTimer.resumeTimeKeeping();
                             }
                         }).show();
-
-
-//                // Check if an answer was effectively selected
-//                if (playerAnswer.isEmpty())
-//                    Toast.makeText(getApplicationContext(),"Answer was not provided", Toast.LENGTH_SHORT).show();
-//                else {
-//                    // Add the point to the user if response is correct
-//                    if (playerAnswer.equals(questionHashMap.get("quest_option5").toString())) {
-//                        score++;
-//                    }
-//                    // Get next question and show it or finish the game if no more questions
-//                    questionHashMap = questionManager.getNextQuestion();
-//                    if (questionHashMap == null) {
-//                        // No more questions - finish the game
-//                        finishGame();
-//                    }
-//                    else {
-//                        displayCurrentQuestion();
-//                    }
-//                }
             }
         });
     }
@@ -258,27 +244,17 @@ public class HistoryQuizActivity extends AppCompatActivity {
 
     // Does all the required initializations to start a quiz and proceeds to start it
     private void startQuiz() {
+        enableQuizControls(true);
+        correctAnswers = 0;
+        questionManager = new QuestionManager(quizApplication, QUIZ_TYPE, MAX_QUESTIONS);
         quizTimer = new QuizTimer();
         quizTimer.startTimeKeeping();
-        score = 0;
-
-        questionManager = new QuestionManager((QuizMasterApplication)getApplication(), "history", MAX_QUESTIONS);
-
         quizInProgress = true;
     }
 
     private void displayElapsedTime() {
-        int elapsedTimeInSeconds = (int)(quizTimer.getElapsedTime()/1000);  // Quiz elapsed time in milliseconds
-
-        // Express the elapsed time in hours, minutes and seconds
-        int hoursElapsedTime = elapsedTimeInSeconds/3600;
-        int remainderMinutes = elapsedTimeInSeconds % 3600;
-        int minutesElapsedTime = remainderMinutes/60;
-        int secondsElapsedTime = remainderMinutes % 60;
-
-        // Display the time
-        String timeString = String.format("%02d:%02d:%02d", hoursElapsedTime, minutesElapsedTime, secondsElapsedTime);
-        btnTime.setText(timeString);
+        String strElapsedTime = quizTimer.getElapsedTimeHHMMSS();
+        btnTime.setText(strElapsedTime);
     }
 
     // Displays the current question along with the corresponding views for the answers
@@ -321,15 +297,42 @@ public class HistoryQuizActivity extends AppCompatActivity {
 
     private void finishGame(boolean quizCompleted) {
         // TODO: Define an fragment to display results nicely. For now only a popup message displays the results
+        quizTimer.pauseTimeKeeping();
+        displayElapsedTime();  // Refresh the display
+        enableQuizControls(false);
+
         if (quizCompleted) {
-            int elapsedTimeInSeconds = (int)(quizTimer.getElapsedTime()/1000);  // Quiz elapsed time in milliseconds
-            quizTimer.pauseTimeKeeping();
-            showMessage("Quiz Completed", "Your results are:");
+            long elapsedTimeInMilliseconds = quizTimer.getElapsedTime();  // Quiz elapsed time in milliseconds
+            int quizScore = quizApplication.getScore(correctAnswers, elapsedTimeInMilliseconds);
+
+            // Display quiz results
+            String resultsMessage = String.format("Your results are:\r\n" +
+                                        "Correct answers: %d out of %d\r\n" +
+                                        "Elapsed time: %s\r\n" +
+                                        "Your Quiz Score: %d", correctAnswers, MAX_QUESTIONS, quizTimer.getElapsedTimeHHMMSS(), quizScore);
+
+            showMessage("Quiz Completed", resultsMessage);
+
+            // Update quiz results in database
+            quizApplication.updateQuizResult(QUIZ_TYPE, correctAnswers, elapsedTimeInMilliseconds);
+
+            // Check if there is a new highest score
+            if (quizScore > highestScore) {
+                // Update the shared preferences and the class property in memory with the new highest score
+                SharedPreferences.Editor ed = sharedPref.edit();
+                ed.putInt(HIGHEST_SCORE_KEY, quizScore);
+                ed.apply();
+                highestScore = quizScore;
+                // Notify the player
+                String congratulationMessage = String.format("Congratulations! You achieved a new Highest Score for a %s quiz: %d", QUIZ_TYPE, quizScore);
+                showMessage("New High Score", congratulationMessage);
+            }
         }
         else {
-            showMessage("Aborted", "Quiz canceled" + System.lineSeparator() + "You can start a new quiz any time!");
+            showMessage("Confirmation", "Your quiz is now canceled." + System.lineSeparator() + "You can start a new quiz any time!");
             //super.onBackPressed(); // Return to previous screen
         }
+        quizInProgress = false;
     }
 
     // Method to display a message
@@ -345,6 +348,26 @@ public class HistoryQuizActivity extends AppCompatActivity {
         builder.setTitle(title);
         builder.setMessage(messageContent);
         builder.show();
+    }
+
+    // Enable or disable GUI controls of the quiz according to the parameter
+    // flagEnable: true to enable, false to disable
+    private void enableQuizControls(boolean flagEnable) {
+        rdbOption1.setEnabled(flagEnable);
+        rdbOption2.setEnabled(flagEnable);
+        rdbOption3.setEnabled(flagEnable);
+        rdbOption4.setEnabled(flagEnable);
+        btnSkip.setEnabled(flagEnable);
+        btnAnswer.setEnabled(flagEnable);
+        btnEnd.setEnabled(flagEnable);
+    }
+
+    @Override
+    protected void onStop() {
+        if (quizInProgress)
+            startService(new Intent(getApplicationContext(), NotificationService.class));
+
+        super.onStop();
     }
 
     @Override

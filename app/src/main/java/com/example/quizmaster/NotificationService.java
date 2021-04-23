@@ -65,7 +65,7 @@ public class NotificationService extends Service {
         final Notification notification = new Notification.Builder(getApplicationContext(), NOTIFICATION_CHANNEL_ID)
                                         .setSmallIcon(R.drawable.ic_notification_quiz)
                                         .setContentTitle(getString(R.string.app_name))
-                                        .setContentText(getString(R.string.notifiation_message))
+                                        .setContentText(getString(R.string.notification_message))
                                         .setAutoCancel(true)
                                         .setContentIntent(pendingIntent)
                                         .build();

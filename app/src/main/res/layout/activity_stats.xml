@@ -57,7 +57,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:layout_marginBottom="80dp"
+            android:layout_marginBottom="20dp"
             android:background="#8F9CCBF1">
 
             <TableRow
@@ -188,6 +188,24 @@
                     android:layout_height="30dp"
                     android:layout_weight="1"
                     android:gravity="center" />
+            </TableRow>
+
+        </TableLayout>
+
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp">
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center">
+
+                <Button
+                    android:id="@+id/button5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Button" />
             </TableRow>
 
         </TableLayout>

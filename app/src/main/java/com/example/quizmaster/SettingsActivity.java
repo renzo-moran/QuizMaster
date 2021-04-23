@@ -10,28 +10,19 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceManager;
 
-//import android.app.Activity;
-//import android.widget.LinearLayout;
-
 public class SettingsActivity extends AppCompatActivity {
 
     private SharedPreferences sharedPref; // Will hold the SharedPreferences object
-     //LinearLayout layout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        //setContentView(R.layout.activity_history_quiz);
-        //layout=(LinearLayout)findViewById(R.id.layout);
         PreferenceManager.setDefaultValues(this, R.xml.root_preferences, false);
         sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
 
         // Set the theme according to preference
-        if (sharedPref.getBoolean("darkTheme", false)) {
-           //layout.setBackgroundResource(R.drawable.dark);
+        if (sharedPref.getBoolean("darkTheme", false))
             setTheme(R.style.DarkTheme);
-        }
-        else {
+        else
             setTheme(R.style.AppTheme);
-        }
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.settings_activity);

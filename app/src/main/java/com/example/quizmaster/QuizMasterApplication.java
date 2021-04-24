@@ -11,6 +11,8 @@ import java.util.HashMap;
 
 public class QuizMasterApplication extends Application {
 
+    public final long SCORING_FACTOR = 10000000;
+
     private static final String DB_NAME = "db_quiz_master";
     private static final int DB_VERSION = 1;
 
@@ -311,10 +313,19 @@ public class QuizMasterApplication extends Application {
     public void updateQuizResult(String quizCategory, int correct_answer, long elapsedTime){
         SQLiteDatabase db = helper.getWritableDatabase();
 
-        int score = Math.round(correct_answer / elapsedTime * 1000);
+        int score = getScore(correct_answer, elapsedTime);
 
-        db.execSQL("INSERT INTO tbl_quiz_result VALUES('" + quizCategory + "', "+ correct_answer + ", " + elapsedTime + "," + score + ", " + System.currentTimeMillis());
+        String query = "INSERT INTO tbl_quiz_result VALUES('" + quizCategory + "', "+ correct_answer + ", " + elapsedTime + "," + score + ", " + System.currentTimeMillis() + ")";
+
+        db.execSQL(query);
     }
+
+    // Returns the score corresponding to the parameters
+    // elapsedTime must be in milliseconds
+    public int getScore(int correctAnswers, long elapsedTime) {
+        return (int)(correctAnswers*SCORING_FACTOR/ elapsedTime + correctAnswers);
+    }
+
 
 
 }

@@ -32,7 +32,7 @@ public class HistoryQuizActivity extends AppCompatActivity {
     public final int REFRESH_INTERVAL = 500; // Interval to refresh elapsed time, in milliseconds
     public final int MAX_QUESTIONS = 10;  // Maximum number of questions of the quiz
     public final String HIGHEST_SCORE_KEY = "historyHighestScore";
-    public final int ANIMATION_DURATION = 2000; // Duration of animation - 1 second
+    public final int ANIMATION_DURATION = 2000; // Duration of animation - 2 seconds
 
     private QuizMasterApplication quizApplication;  // The application object
     private SharedPreferences sharedPref; // Will hold the SharedPreferences object
@@ -58,11 +58,15 @@ public class HistoryQuizActivity extends AppCompatActivity {
     private boolean creatingActivity = false; // Flag to indicate if main activity is being created
     private boolean saveState;  // Will store the setting related to saving quiz status on close
     private boolean darkTheme;  // Will store the setting related to using dark theme
+    private boolean backToMainScreen;  // Will be true at the end of a quiz to automatically return to main screen
+
+    public HistoryQuizActivity SELF;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         creatingActivity = true;
+        SELF = this;
 
         quizApplication = (QuizMasterApplication)getApplication();
         PreferenceManager.setDefaultValues(this, R.xml.root_preferences, false);
@@ -113,6 +117,12 @@ public class HistoryQuizActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         displayElapsedTime();
+
+                        // Check if it's time to return to MainActivity
+                        if (backToMainScreen) {
+                            backToMainScreen = false;
+                            finish();
+                        }
                     }
                 });
             }
@@ -134,6 +144,9 @@ public class HistoryQuizActivity extends AppCompatActivity {
                 totalQuestions = sharedPref.getInt("total_questions", MAX_QUESTIONS);
                 correctAnswers = sharedPref.getInt("correct_answers", 0);
                 int currentQuestionNumber = sharedPref.getInt("current_question_number", 1);
+                if (correctAnswers >= currentQuestionNumber && currentQuestionNumber > 0)
+                    correctAnswers = currentQuestionNumber-1;
+
                 resumeQuiz(elapsedTime, currentQuestionNumber);
             } else {
                 // TODO: Show a countdown before starting the quiz or have the user press a button
@@ -362,40 +375,71 @@ public class HistoryQuizActivity extends AppCompatActivity {
         quizInProgress = false;  // No longer a quiz in progress
 
         // Store that a quiz is no longer in progress
-        SharedPreferences.Editor ed = sharedPref.edit();
+        final SharedPreferences.Editor ed = sharedPref.edit();
         ed.putString("quiz_in_progress", MainActivity.NO_QUIZ_IN_PROGRESS);  // To indicate that there is no longer a quiz in progress
         ed.apply();
 
         if (quizCompleted) {
             long elapsedTimeInMilliseconds = quizTimer.getElapsedTime();  // Quiz elapsed time in milliseconds
-            int quizScore = quizApplication.getScore(correctAnswers, elapsedTimeInMilliseconds);
+            quizApplication.updateQuizResult(QUIZ_TYPE, correctAnswers, elapsedTimeInMilliseconds); // Update quiz results in database
 
             // Display quiz results
+            final int quizScore = quizApplication.getScore(correctAnswers, elapsedTimeInMilliseconds);
             String resultsMessage = String.format("Your results are:\r\n" +
                                         "Correct answers: %d out of %d\r\n" +
                                         "Elapsed time: %s\r\n" +
                                         "Your Quiz Score: %d", correctAnswers, MAX_QUESTIONS, quizTimer.getElapsedTimeHHMMSS(), quizScore);
 
-            showMessage("Quiz Completed", resultsMessage);
+            android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
+            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    // Check if there is a new highest score
+                    if (quizScore > highestScore) {
+                        // Update the shared preferences and the class property in memory with the new highest score
+                        ed.putInt(HIGHEST_SCORE_KEY, quizScore);
+                        ed.apply();
+                        highestScore = quizScore;
+                        // Notify the player
+                        String congratulationMessage = String.format("Congratulations! You achieved a new Highest Score for a %s quiz: %d", QUIZ_TYPE, quizScore);
 
-            // Update quiz results in database
-            quizApplication.updateQuizResult(QUIZ_TYPE, correctAnswers, elapsedTimeInMilliseconds);
-
-            // Check if there is a new highest score
-            if (quizScore > highestScore) {
-                // Update the shared preferences and the class property in memory with the new highest score
-                ed = sharedPref.edit();
-                ed.putInt(HIGHEST_SCORE_KEY, quizScore);
-                ed.apply();
-                highestScore = quizScore;
-                // Notify the player
-                String congratulationMessage = String.format("Congratulations! You achieved a new Highest Score for a %s quiz: %d", QUIZ_TYPE, quizScore);
-                showMessage("New High Score", congratulationMessage);
-            }
+                        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(SELF);
+                        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                backToMainScreen = true; // Will return to main screen automatically
+                            }
+                        });
+                        builder.setCancelable(true);
+                        builder.setTitle("New High Score");
+                        builder.setMessage(congratulationMessage);
+                        builder.show();
+                    } else {
+                        backToMainScreen = true; // Will return to main screen automatically
+                    }
+                }
+            });
+            builder.setCancelable(true);
+            builder.setTitle("Quiz Completed");
+            builder.setMessage(resultsMessage);
+            builder.show();
         }
         else {
-            showMessage("Confirmation", "Your quiz is now canceled." + System.lineSeparator() + "You can start a new quiz any time!");
+            String abortMessage = "Your quiz is now canceled." + System.lineSeparator() + "You can start a new quiz any time!";
+            //showMessage("Confirmation", "Your quiz is now canceled." + System.lineSeparator() + "You can start a new quiz any time!");
             //super.onBackPressed(); // Return to previous screen
+
+            android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
+            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    backToMainScreen = true; // Will return to main screen automatically
+                }
+            });
+            builder.setCancelable(true);
+            builder.setTitle("Confirmation");
+            builder.setMessage(abortMessage);
+            builder.show();
         }
     }
 

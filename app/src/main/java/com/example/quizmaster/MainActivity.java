@@ -72,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
 //                break;
             case NO_QUIZ_IN_PROGRESS:
             default:
+                // Do nothing here - continue with menu being displayed
                 break;
         }
     }

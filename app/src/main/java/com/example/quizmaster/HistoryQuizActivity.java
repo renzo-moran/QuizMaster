@@ -194,6 +194,7 @@ public class HistoryQuizActivity extends AppCompatActivity {
                     }
                     // Pause timer and perform animation
                     quizTimer.pauseTimeKeeping();
+                    enableQuizControls(false); // To prevent user from pressing buttons during animation
                     imageView.setAlpha(0f);
                     imageView.animate().alpha(1f).setDuration(ANIMATION_DURATION).setListener(
                             new AnimatorListenerAdapter() {
@@ -207,6 +208,7 @@ public class HistoryQuizActivity extends AppCompatActivity {
                                     else {
                                         displayCurrentQuestion();
                                         quizTimer.resumeTimeKeeping();  // Resume timer
+                                        enableQuizControls(true);
                                     }
                                 }
                             }

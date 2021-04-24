@@ -37,25 +37,6 @@ public class NotificationService extends Service {
         final PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent,
                                         PendingIntent.FLAG_UPDATE_CURRENT);
 
-        final Notification notification = new Notification.Builder(getApplicationContext())
-                                        .setSmallIcon(R.drawable.ic_notification_quiz)
-                                        .setContentTitle(getString(R.string.app_name))
-                                        .setContentText(getString(R.string.notification_message))
-                                        .setAutoCancel(true)
-                                        .setContentIntent(pendingIntent)
-                                        .build();
-
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-
-                toast.show();
-                manager.notify(1, notification);
-                timer.cancel();
-                stopSelf();
-            }
-        }, 5000);
-
         if (networkInfo != null && networkInfo.isConnected()) {
             timer.schedule(new TimerTask() {
                 @Override
@@ -81,6 +62,26 @@ public class NotificationService extends Service {
         else {
             stopSelf();
         }
+        final Notification notification = new Notification.Builder(getApplicationContext())
+                                        .setSmallIcon(R.drawable.ic_notification_quiz)
+                                        .setContentTitle(getString(R.string.app_name))
+                                        .setContentText(getString(R.string.notification_message))
+                                        .setAutoCancel(true)
+                                        .setContentIntent(pendingIntent)
+                                        .build();
+
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+
+                toast.show();
+                manager.notify(1, notification);
+                timer.cancel();
+                stopSelf();
+            }
+        }, 5000);
+
+
 
         super.onCreate();
     }

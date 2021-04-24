@@ -483,7 +483,7 @@ public class HistoryQuizActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         if (quizInProgress)
-            startService(new Intent(getApplicationContext(), NotificationService.class));
+            startService(new Intent(getApplicationContext(), QuizStopNotificationService.class));
 
         super.onStop();
     }

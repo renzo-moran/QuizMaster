@@ -11,8 +11,6 @@ import java.util.HashMap;
 
 public class QuizMasterApplication extends Application {
 
-    public final long SCORING_FACTOR = 10000000;
-
     private static final String DB_NAME = "db_quiz_master";
     private static final int DB_VERSION = 1;
 
@@ -35,7 +33,7 @@ public class QuizMasterApplication extends Application {
                         "option2 TEXT, option3 TEXT, option4 TEXT, answer TEXT )");
 
                 db.execSQL("CREATE TABLE IF NOT EXISTS tbl_quiz_result(" +
-                        "quiz_category TEXT, correct_answer INTEGER, elapsed_time REAL, score INTEGER, time_stamp REAL)");
+                        "quiz_category TEXT, correct_answer INTEGER, elapsed_time REAL, score REAL, time_stamp REAL)");
 
 
                 //insertQuiz();
@@ -149,7 +147,6 @@ public class QuizMasterApplication extends Application {
 
         cursor.close();
 
-
     }
 
     /**
@@ -238,7 +235,7 @@ public class QuizMasterApplication extends Application {
 
         int last_num_quiz_set;
         int last_num_correct;
-        int last_avg_elapsed_time;
+        String last_avg_elapsed_time;
         double last_avg_score;
         int all_num_quiz_set;
         int all_num_correct;
@@ -249,7 +246,7 @@ public class QuizMasterApplication extends Application {
         cursor_all.moveToFirst();
         last_num_quiz_set = cursor_last.getInt(0);
         last_num_correct = cursor_last.getInt(1);
-        last_avg_elapsed_time = cursor_last.getInt(2);
+        last_avg_elapsed_time = displayElapsedTime(cursor_last.getInt(2));
         last_avg_score = cursor_last.getDouble(3);
         all_num_quiz_set = cursor_all.getInt(0);
         all_num_correct = cursor_all.getInt(1);
@@ -268,11 +265,13 @@ public class QuizMasterApplication extends Application {
         else
             all_ratio = Math.round(all_num_correct/all_num_quiz_set);
 
-        rtnMap.put("LAST_PLAYED", last_num_quiz_set * 10);
+
+
+        rtnMap.put("LAST_PLAYED", last_num_quiz_set);
         rtnMap.put("LAST_RATIO", last_ratio);
         rtnMap.put("LAST_AVG_TIME", last_avg_elapsed_time);
         rtnMap.put("LAST_AVG_SCORE", Math.round(last_avg_score));
-        rtnMap.put("ALL_PLAYED", all_num_quiz_set * 10);
+        rtnMap.put("ALL_PLAYED", all_num_quiz_set);
         rtnMap.put("ALL_RATIO", all_ratio);
         rtnMap.put("ALL_AVG_TIME", all_avg_elapsed_time);
         rtnMap.put("ALL_AVG_SCORE", Math.round(all_avg_score));
@@ -283,7 +282,21 @@ public class QuizMasterApplication extends Application {
         return rtnMap;
     }
 
-    public void resetQuizResult(){
+    private String displayElapsedTime(double last_avg_elapsed_time) {
+        int elapsedTimeInSeconds = (int)(last_avg_elapsed_time/1000);  // Quiz elapsed time in milliseconds
+
+        // Express the elapsed time in hours, minutes and seconds
+        int hoursElapsedTime = elapsedTimeInSeconds/3600;
+        int remainderMinutes = elapsedTimeInSeconds % 3600;
+        int minutesElapsedTime = remainderMinutes/60;
+        int secondsElapsedTime = remainderMinutes % 60;
+
+        // Display the time
+        String timeString = String.format("%02d:%02d", minutesElapsedTime, secondsElapsedTime);
+        return timeString;
+    }
+
+    public void resetTableStats(){
         SQLiteDatabase db = helper.getWritableDatabase();
 
         db.execSQL("DELETE FROM tbl_quiz_result");
@@ -298,17 +311,10 @@ public class QuizMasterApplication extends Application {
     public void updateQuizResult(String quizCategory, int correct_answer, long elapsedTime){
         SQLiteDatabase db = helper.getWritableDatabase();
 
-        int score = getScore(correct_answer, elapsedTime);
+        int score = Math.round(correct_answer / elapsedTime * 1000);
 
-        String query = "INSERT INTO tbl_quiz_result VALUES('" + quizCategory + "', "+ correct_answer + ", " + elapsedTime + "," + score + ", " + System.currentTimeMillis() + ")";
-
-        db.execSQL(query);
+        db.execSQL("INSERT INTO tbl_quiz_result VALUES('" + quizCategory + "', "+ correct_answer + ", " + elapsedTime + "," + score + ", " + System.currentTimeMillis());
     }
 
-    // Returns the score corresponding to the parameters
-    // elapsedTime must be in milliseconds
-    public int getScore(int correctAnswers, long elapsedTime) {
-        return (int)(correctAnswers*SCORING_FACTOR/ elapsedTime + correctAnswers);
-    }
 
 }

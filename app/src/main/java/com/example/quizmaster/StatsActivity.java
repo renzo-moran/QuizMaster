@@ -5,11 +5,13 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.PreferenceManager;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -33,6 +35,7 @@ public class StatsActivity extends AppCompatActivity {
     private TextView txtAllAvgTime;
     private TextView txtAllAvgScore;
     private FloatingActionButton fab;
+    private Button btnReset;
 
     private SharedPreferences sharedPref; // Will hold the SharedPreferences object
 
@@ -64,6 +67,7 @@ public class StatsActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
+
                 StatsActivity.super.onBackPressed();
             }
         });
@@ -78,6 +82,7 @@ public class StatsActivity extends AppCompatActivity {
         txtAllRatio = findViewById(R.id.txtAllRatio);
         txtAllAvgTime = findViewById(R.id.txtAllAvgTime);
         txtAllAvgScore = findViewById(R.id.txtAllAvgScore);
+        btnReset = findViewById(R.id.btnReset);
 
         rdbHistory.setChecked(true);
         setStatistics("history");
@@ -122,6 +127,21 @@ public class StatsActivity extends AppCompatActivity {
                             .show();
                     setStatistics("math");
                 }
+            }
+        });
+
+        btnReset.setOnClickListener(new View.OnClickListener() {
+
+
+            @Override
+            public void onClick(View v) {
+                ((QuizMasterApplication)getApplication()).resetQuizResult();
+
+                if(rdbHistory.isChecked() == true)
+                    setStatistics("history");
+                else
+                    setStatistics("math");
+
             }
         });
 

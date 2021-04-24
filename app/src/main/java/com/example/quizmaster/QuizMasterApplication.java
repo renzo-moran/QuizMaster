@@ -283,7 +283,7 @@ public class QuizMasterApplication extends Application {
         return rtnMap;
     }
 
-    public void resetTableStats(){
+    public void resetQuizResult(){
         SQLiteDatabase db = helper.getWritableDatabase();
 
         db.execSQL("DELETE FROM tbl_quiz_result");

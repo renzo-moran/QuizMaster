@@ -53,5 +53,7 @@
     <string name="statistics_btn_reset">RESET</string>
     <string name="statistics_high_score">High Score</string>
 
+
+
     <string name="notification_message">Keep on playing Quiz! You know you want to!</string>
 </resources>

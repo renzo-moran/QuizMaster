@@ -28,10 +28,9 @@ import java.util.TimerTask;
 
 
 public class HistoryQuizActivity extends AppCompatActivity {
-
+    public static final String QUIZ_TYPE = "history";
     public final int REFRESH_INTERVAL = 500; // Interval to refresh elapsed time, in milliseconds
     public final int MAX_QUESTIONS = 10;  // Maximum number of questions of the quiz
-    public final String QUIZ_TYPE = "history";
     public final String HIGHEST_SCORE_KEY = "historyHighestScore";
     public final int ANIMATION_DURATION = 2000; // Duration of animation - 1 second
 
@@ -127,8 +126,9 @@ public class HistoryQuizActivity extends AppCompatActivity {
         // If there is no quiz in progress check if there was one that was interrupted before or create a new one
         if (!quizInProgress) {
             saveState = sharedPref.getBoolean("saveOnClose", false);
-            // Check if there was a quiz in progress last time the application was closed
-            if (saveState && sharedPref.getBoolean("quiz_in_progress", false)) {
+            String savedQuizType = sharedPref.getString("quiz_in_progress", MainActivity.NO_QUIZ_IN_PROGRESS);
+            // Check if there was a quiz in progress last time the application was closed and it was of this quiz type
+            if (saveState && savedQuizType.equals(QUIZ_TYPE)) {
                 long elapsedTime = sharedPref.getLong("elapsed_time", 0);
                 btnTime.setText(sharedPref.getString("elapsed_time_hhmmss", getResources().getString(R.string.initial_time)));
                 totalQuestions = sharedPref.getInt("total_questions", MAX_QUESTIONS);
@@ -289,7 +289,7 @@ public class HistoryQuizActivity extends AppCompatActivity {
 
         // Store that a quiz is in progress in order to restore quiz after close if needed
         SharedPreferences.Editor ed = sharedPref.edit();
-        ed.putBoolean("quiz_in_progress", true);
+        ed.putString("quiz_in_progress", QUIZ_TYPE);
         ed.apply();
     }
 
@@ -303,7 +303,7 @@ public class HistoryQuizActivity extends AppCompatActivity {
 
         // Store that a quiz is in progress in order to restore quiz after close if needed
         SharedPreferences.Editor ed = sharedPref.edit();
-        ed.putBoolean("quiz_in_progress", true);
+        ed.putString("quiz_in_progress", QUIZ_TYPE);
         ed.apply();
     }
 
@@ -361,7 +361,7 @@ public class HistoryQuizActivity extends AppCompatActivity {
 
         // Store that a quiz is no longer in progress
         SharedPreferences.Editor ed = sharedPref.edit();
-        ed.putBoolean("quiz_in_progress", false);
+        ed.putString("quiz_in_progress", MainActivity.NO_QUIZ_IN_PROGRESS);  // To indicate that there is no longer a quiz in progress
         ed.apply();
 
         if (quizCompleted) {
@@ -465,10 +465,14 @@ public class HistoryQuizActivity extends AppCompatActivity {
         if (saveState || !creatingActivity) {
             // Restore the saved values
             btnTime.setText(sharedPref.getString("elapsed_time_hhmmss", getResources().getString(R.string.initial_time)));
-            //long elapsedTime = sharedPref.getLong("elapsed_time", 0);
             totalQuestions = sharedPref.getInt("total_questions", MAX_QUESTIONS);
             correctAnswers = sharedPref.getInt("correct_answers", 0);
-            //int currentQuestion = sharedPref.getInt("current_question_number", 1);
+            int currentQuestion = sharedPref.getInt("current_question_number", 1);
+            if (correctAnswers >= currentQuestion && currentQuestion > 0)
+                correctAnswers = currentQuestion-1;
+
+            // No need to read this item here as it is read in onCreate:
+            //long elapsedTime = sharedPref.getLong("elapsed_time", 0);
         }
 
         creatingActivity = false;

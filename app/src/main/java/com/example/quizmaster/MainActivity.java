@@ -19,6 +19,8 @@ import com.example.quizmaster.R;
 import com.google.android.material.navigation.NavigationView;
 
 public class MainActivity extends AppCompatActivity {
+    public static final String NO_QUIZ_IN_PROGRESS = "none";
+
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mToggle;
 

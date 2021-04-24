@@ -4,6 +4,7 @@
 
     <application
         android:name=".QuizMasterApplication"
+        android:configChanges="keyboardHidden|orientation|screenSize"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -15,9 +16,15 @@
             android:enabled="true"
             android:exported="false"></service>
 
-        <activity android:name=".StatsActivity" />
-        <activity android:name=".MathQuizActivity" />
-        <activity android:name=".HistoryQuizActivity" />
+        <activity
+            android:name=".StatsActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize" />
+        <activity
+            android:name=".MathQuizActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize" />
+        <activity
+            android:name=".HistoryQuizActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize" />
         <activity
             android:name=".SettingsActivity"
             android:label="@string/title_activity_settings"

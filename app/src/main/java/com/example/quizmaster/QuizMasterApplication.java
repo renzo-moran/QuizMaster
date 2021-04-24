@@ -20,7 +20,7 @@ public class QuizMasterApplication extends Application {
 
     @Override
     public void onCreate() {
-        final Toast toast = Toast.makeText(this, "Apoplication Start onCreate!!!!!!!", Toast.LENGTH_LONG);
+        final Toast toast = Toast.makeText(this, "Application Start onCreate!!!!!!!", Toast.LENGTH_LONG);
         helper = new SQLiteOpenHelper(this, DB_NAME, null, DB_VERSION) {
             @Override
             public void onCreate(SQLiteDatabase db) {
@@ -69,13 +69,13 @@ public class QuizMasterApplication extends Application {
             db.execSQL("INSERT INTO tbl_quiz_questions VALUES (" +
                     "3,'history','TF','True or False? The Civil War ended in 1861.','True','False','', '', 'False')");
             db.execSQL("INSERT INTO tbl_quiz_questions VALUES (" +
-                    "4,'history','MC','Which city was attacked by the first atomic bomb?','Nagasaki','Paris','Hiroshima', 'Mexico City', 'Hirosima')");
+                    "4,'history','MC','Which city was attacked by the first atomic bomb?','Nagasaki','Paris','Hiroshima', 'Mexico City', 'Hiroshima')");
             db.execSQL("INSERT INTO tbl_quiz_questions VALUES (" +
                     "5,'history','MC','Who first discovered America?','Leif Eriksson','Christopher Columbus','Pierre de Monts', 'Amerigo Vespucci', 'Leif Eriksson')");
             db.execSQL("INSERT INTO tbl_quiz_questions VALUES (" +
                     "6,'history','MC','Who was the architect who rebuilt London after the Great Fire of 1666?','I.M. Pei','Sir Christopher Wren','Christopher Columbus', 'Sir Christopher Robin', 'Sir Christopher Wren')");
             db.execSQL("INSERT INTO tbl_quiz_questions VALUES (" +
-                    "7,'history','MC','Which of these peoples once ruled Norway?','Vikings','Aztecs','Irish', 'Romans', 'Vikings')");
+                    "7,'history','MC','Which of these people once ruled Norway?','Vikings','Aztecs','Irish', 'Romans', 'Vikings')");
             db.execSQL("INSERT INTO tbl_quiz_questions VALUES (" +
                     "8,'history','MC','Which of these nations was neutral in World War I?','England','Germany','Italy', 'Norway', 'Norway')");
             db.execSQL("INSERT INTO tbl_quiz_questions VALUES (" +
@@ -85,7 +85,7 @@ public class QuizMasterApplication extends Application {
             db.execSQL("INSERT INTO tbl_quiz_questions VALUES (" +
                     "11,'history','MC','John F. Kennedy was assassinated in:','New York','Austin','Dallas', 'Miami', 'Dallas')");
             db.execSQL("INSERT INTO tbl_quiz_questions VALUES (" +
-                    "12,'history','MC','Which general famously stated ''I shall return''?','Bull Halsey','George Patton','Douglas MacAthur', 'Omar Bradley', 'Douglas MacAthur')");
+                    "12,'history','MC','Which general famously stated ''I shall return''?','Bull Halsey','George Patton','Douglas MacArthur', 'Omar Bradley', 'Douglas MacArthur')");
             db.execSQL("INSERT INTO tbl_quiz_questions VALUES (" +
                     "13,'history','MC','American involvement in the Korean War took place in which decade?','1930s','1940s','1950s', '1960s', '1950s')");
             db.execSQL("INSERT INTO tbl_quiz_questions VALUES (" +
@@ -93,7 +93,7 @@ public class QuizMasterApplication extends Application {
             db.execSQL("INSERT INTO tbl_quiz_questions VALUES (" +
                     "15,'history','MC','The Magna Carta was published by the King of which country?','Fance','Austria','Italy', 'England', 'England')");
             db.execSQL("INSERT INTO tbl_quiz_questions VALUES (" +
-                    "16,'history','MC','Who is the man developed the first successful printing press?','Johannes Gutenberg','Benjamin Franklin','Sir Isaac Newton', 'Martin Luther', 'Johannes Gutenberg')");
+                    "16,'history','MC','Who is the man who developed the first successful printing press?','Johannes Gutenberg','Benjamin Franklin','Sir Isaac Newton', 'Martin Luther', 'Johannes Gutenberg')");
             db.execSQL("INSERT INTO tbl_quiz_questions VALUES (" +
                     "17,'history','MC','The disease that ravaged and killed a third of Europe''s population in the 14th century is known as:','The White Death','The Black Plague','Smallpox', 'The Bubonic Plague', 'The Bubonic Plague')");
             db.execSQL("INSERT INTO tbl_quiz_questions VALUES (" +

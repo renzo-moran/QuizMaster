@@ -6,10 +6,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
-import android.view.View;
 import android.widget.Toast;
-
-import com.google.android.material.snackbar.Snackbar;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -37,7 +34,7 @@ public class NotificationService extends Service {
         final Notification notification = new Notification.Builder(getApplicationContext())
                                         .setSmallIcon(R.drawable.ic_notification_quiz)
                                         .setContentTitle(getString(R.string.app_name))
-                                        .setContentText(getString(R.string.notifiation_message))
+                                        .setContentText(getString(R.string.notification_message))
                                         .setAutoCancel(true)
                                         .setContentIntent(pendingIntent)
                                         .build();

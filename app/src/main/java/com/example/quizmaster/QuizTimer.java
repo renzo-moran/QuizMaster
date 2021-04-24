@@ -5,11 +5,19 @@ public class QuizTimer {
     private long startPeriodTime;  // Start time of the period which duration is being measured
     private boolean timeKeeping;   // Flag to indicate if time keeping is in progress
 
+    // Constructor to be used when time will start counting from 0 (no elapsed time)
     public QuizTimer() {
         elapsedTime = 0;
         timeKeeping = false;
     }
 
+    // Constructor to be used when a predetermined elapsedTime should be observed
+    public QuizTimer(long elapsedTime) {
+        this.elapsedTime = elapsedTime;
+        timeKeeping = false;
+    }
+
+    // This will reset any previous elapsed time. If this is not desired, use resumeTimeKeeping() instead
     public void startTimeKeeping() {
         elapsedTime = 0;
         startPeriodTime = System.currentTimeMillis(); // To start counting the time of the current period
@@ -58,5 +66,9 @@ public class QuizTimer {
         String timeString = String.format("%02d:%02d:%02d", hoursElapsedTime, minutesElapsedTime, secondsElapsedTime);
         return timeString;
     }
+
+//    public void setElapsedTime(long newElapsedTime) {
+//
+//    }
 
 }

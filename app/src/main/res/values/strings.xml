@@ -8,6 +8,7 @@
     <string name="option2">option2</string>
     <string name="option3">option3</string>
     <string name="option4">option4</string>
+    <string name="initial_time">00:00:00</string>
 
     <string name="open">Open</string>
     <string name="close">Close</string>
@@ -29,7 +30,7 @@
     <string name="appearance_header">Appearance</string>
 
     <!-- Game Play Preferences -->
-    <string name="save_game_title">Save game on close</string>
+    <string name="save_game_title">Save quiz status on close</string>
 
     <!-- Appearance Preferences -->
     <string name="dark_theme_title">Dark theme</string>
@@ -39,7 +40,6 @@
     values-round/strings.xml for round devices.
     -->
     <string name="hello_world">Hello Square World!</string>
-
 
     <!-- Statistics Titles -->
     <string name="statistics_radio_history">History</string>
@@ -51,5 +51,5 @@
     <string name="statistics_top_avgTime">Ave. Time</string>
     <string name="statistics_top_avgScore">Ave. Score</string>
 
-    <string name="notifiation_message">Keep on playing Quiz! You know you want to!</string>
+    <string name="notification_message">Keep on playing Quiz! You know you want to!</string>
 </resources>

@@ -6,6 +6,8 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.PreferenceManager;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -14,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
@@ -30,6 +33,7 @@ public class HistoryQuizActivity extends AppCompatActivity {
     public final int MAX_QUESTIONS = 10;  // Maximum number of questions of the quiz
     public final String QUIZ_TYPE = "history";
     public final String HIGHEST_SCORE_KEY = "historyHighestScore";
+    public final int ANIMATION_DURATION = 2000; // Duration of animation - 1 second
 
     private QuizMasterApplication quizApplication;  // The application object
     private SharedPreferences sharedPref; // Will hold the SharedPreferences object
@@ -38,6 +42,7 @@ public class HistoryQuizActivity extends AppCompatActivity {
     private Timer refreshTimer;   // Will be used to periodically refresh the GUI as needed
     private QuestionManager questionManager;  // Will manage the quiz questions
     private HashMap questionHashMap;  // HashMap of current question
+    private int totalQuestions;  // Total number of quiz questions - typically same as MAX_QUESTIONS
     private int correctAnswers; // Number of correct answers
     private String playerAnswer;  // The player's answer to current question
     private int highestScore; // Highest score that is saved for this type of quiz
@@ -48,16 +53,25 @@ public class HistoryQuizActivity extends AppCompatActivity {
     private TextView textViewQuestion;
     private RadioButton rdbOption1, rdbOption2, rdbOption3, rdbOption4;
     private Button btnSkip, btnAnswer, btnEnd;
+    private ImageView imageView;
 
+    // Control flags
+    private boolean creatingActivity = false; // Flag to indicate if main activity is being created
+    private boolean saveState;  // Will store the setting related to saving quiz status on close
+    private boolean darkTheme;  // Will store the setting related to using dark theme
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        creatingActivity = true;
+
         quizApplication = (QuizMasterApplication)getApplication();
         PreferenceManager.setDefaultValues(this, R.xml.root_preferences, false);
         sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
 
         // Set the theme according to preference
-        if (sharedPref.getBoolean("darkTheme", false)) {
+        darkTheme = sharedPref.getBoolean("darkTheme", false);
+        if (darkTheme) {
             setTheme(R.style.DarkTheme);
             // TODO: Change background to dark version
         }
@@ -66,7 +80,6 @@ public class HistoryQuizActivity extends AppCompatActivity {
             // TODO: Change background to light version
         }
 
-        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history_quiz);
 
         // Obtain the highest score saved for this type of quiz
@@ -83,6 +96,7 @@ public class HistoryQuizActivity extends AppCompatActivity {
         btnSkip = (Button)findViewById(R.id.btnSkip);
         btnAnswer = (Button)findViewById(R.id.btnAnswer);
         btnEnd = (Button)findViewById(R.id.btnEnd);
+        imageView = (ImageView)findViewById(R.id.imageView);
 
         // Set the listener for the radio buttons
         rdbOption1.setOnCheckedChangeListener(new Radio_check());
@@ -110,11 +124,22 @@ public class HistoryQuizActivity extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
+        // If there is no quiz in progress check if there was one that was interrupted before or create a new one
         if (!quizInProgress) {
-            // TODO: Show a countdown before starting the quiz or have the user press a button
-            startQuiz();
-            displayElapsedTime();
-
+            saveState = sharedPref.getBoolean("saveOnClose", false);
+            // Check if there was a quiz in progress last time the application was closed
+            if (saveState && sharedPref.getBoolean("quiz_in_progress", false)) {
+                long elapsedTime = sharedPref.getLong("elapsed_time", 0);
+                btnTime.setText(sharedPref.getString("elapsed_time_hhmmss", getResources().getString(R.string.initial_time)));
+                totalQuestions = sharedPref.getInt("total_questions", MAX_QUESTIONS);
+                correctAnswers = sharedPref.getInt("correct_answers", 0);
+                int currentQuestionNumber = sharedPref.getInt("current_question_number", 1);
+                resumeQuiz(elapsedTime, currentQuestionNumber);
+            } else {
+                // TODO: Show a countdown before starting the quiz or have the user press a button
+                startQuiz();
+                displayElapsedTime();
+            }
             // Get next question and show it or finish the game if no more questions
             questionHashMap = questionManager.getNextQuestion();
             if (questionHashMap == null) {
@@ -159,23 +184,33 @@ public class HistoryQuizActivity extends AppCompatActivity {
                             .show();
                 }
                 else {
-                    // Increase the correct answers counter if response is correct
+                    // Set the corresponding smiley and increase the correct answers counter if response is correct
                     if (playerAnswer.equals(questionHashMap.get("quest_option5").toString())) {
-                        // TODO: Display happy face animation
                         correctAnswers++;
+                        imageView.setImageResource(R.drawable.smile);
                     }
                     else {
-                        // TODO: Display sad face animation
+                        imageView.setImageResource(R.drawable.sad);
                     }
-                    // Get next question and show it or finish the game if no more questions
-                    questionHashMap = questionManager.getNextQuestion();
-                    if (questionHashMap == null) {
-                        // No more questions - finish the game as quiz completed
-                        finishGame(true);
-                    }
-                    else {
-                        displayCurrentQuestion();
-                    }
+                    // Pause timer and perform animation
+                    quizTimer.pauseTimeKeeping();
+                    imageView.setAlpha(0f);
+                    imageView.animate().alpha(1f).setDuration(ANIMATION_DURATION).setListener(
+                            new AnimatorListenerAdapter() {
+                                @Override
+                                public void onAnimationEnd(Animator animation) {  // Callback function
+                                    // Get next question and show it or finish the game if no more questions
+                                    questionHashMap = questionManager.getNextQuestion();
+                                    if (questionHashMap == null)
+                                        // No more questions - finish the game as quiz completed
+                                        finishGame(true);
+                                    else {
+                                        displayCurrentQuestion();
+                                        quizTimer.resumeTimeKeeping();  // Resume timer
+                                    }
+                                }
+                            }
+                    );
                 }
             }
         });
@@ -247,9 +282,29 @@ public class HistoryQuizActivity extends AppCompatActivity {
         enableQuizControls(true);
         correctAnswers = 0;
         questionManager = new QuestionManager(quizApplication, QUIZ_TYPE, MAX_QUESTIONS);
+        totalQuestions = questionManager.getTotalQuestions(); // total number of questions effectively loaded
         quizTimer = new QuizTimer();
         quizTimer.startTimeKeeping();
         quizInProgress = true;
+
+        // Store that a quiz is in progress in order to restore quiz after close if needed
+        SharedPreferences.Editor ed = sharedPref.edit();
+        ed.putBoolean("quiz_in_progress", true);
+        ed.apply();
+    }
+
+    private void resumeQuiz(long elapsedTime, int currentQuestionNumber) {
+        enableQuizControls(true);
+        questionManager = new QuestionManager(quizApplication, QUIZ_TYPE, totalQuestions, currentQuestionNumber);
+        totalQuestions = questionManager.getTotalQuestions(); // total number of questions effectively loaded
+        quizTimer = new QuizTimer(elapsedTime);
+        quizTimer.resumeTimeKeeping();
+        quizInProgress = true;
+
+        // Store that a quiz is in progress in order to restore quiz after close if needed
+        SharedPreferences.Editor ed = sharedPref.edit();
+        ed.putBoolean("quiz_in_progress", true);
+        ed.apply();
     }
 
     private void displayElapsedTime() {
@@ -259,11 +314,12 @@ public class HistoryQuizActivity extends AppCompatActivity {
 
     // Displays the current question along with the corresponding views for the answers
     private void displayCurrentQuestion() {
-        textViewQuestionNumber.setText(String.format("Question %d",questionManager.getCurrentQuestion() + 1));
+        textViewQuestionNumber.setText(String.format("Question %d",questionManager.getCurrentQuestionNumber()));
         textViewQuestion.setText(questionHashMap.get("quest_text").toString());
+        imageView.setImageResource(R.drawable.questmark);
         playerAnswer = "";
 
-        // Show the corresponding GUI controls for the answers depending of question type
+        // Show the corresponding GUI controls for the answers depending on question type
         String questionType = questionHashMap.get("quest_type").toString();
         switch(questionType) {
             case "MC":  // Multiple Choice
@@ -301,6 +357,13 @@ public class HistoryQuizActivity extends AppCompatActivity {
         displayElapsedTime();  // Refresh the display
         enableQuizControls(false);
 
+        quizInProgress = false;  // No longer a quiz in progress
+
+        // Store that a quiz is no longer in progress
+        SharedPreferences.Editor ed = sharedPref.edit();
+        ed.putBoolean("quiz_in_progress", false);
+        ed.apply();
+
         if (quizCompleted) {
             long elapsedTimeInMilliseconds = quizTimer.getElapsedTime();  // Quiz elapsed time in milliseconds
             int quizScore = quizApplication.getScore(correctAnswers, elapsedTimeInMilliseconds);
@@ -319,7 +382,7 @@ public class HistoryQuizActivity extends AppCompatActivity {
             // Check if there is a new highest score
             if (quizScore > highestScore) {
                 // Update the shared preferences and the class property in memory with the new highest score
-                SharedPreferences.Editor ed = sharedPref.edit();
+                ed = sharedPref.edit();
                 ed.putInt(HIGHEST_SCORE_KEY, quizScore);
                 ed.apply();
                 highestScore = quizScore;
@@ -332,7 +395,6 @@ public class HistoryQuizActivity extends AppCompatActivity {
             showMessage("Confirmation", "Your quiz is now canceled." + System.lineSeparator() + "You can start a new quiz any time!");
             //super.onBackPressed(); // Return to previous screen
         }
-        quizInProgress = false;
     }
 
     // Method to display a message
@@ -362,6 +424,56 @@ public class HistoryQuizActivity extends AppCompatActivity {
         btnEnd.setEnabled(flagEnable);
     }
 
+    // Event called when the application is paused or deactivated, or when the orientation of the device changes
+    // If a quiz is in progress:
+    // - Quiz timer is paused
+    // - Value of key application variables are stored here so that they can be restored later
+    @Override
+    protected void onPause() {
+        if (quizInProgress) {
+            quizTimer.pauseTimeKeeping();
+            long elapsedTime = quizTimer.getElapsedTime();
+            String strElapsedTime = quizTimer.getElapsedTimeHHMMSS();
+
+            // Store the necessary values
+            SharedPreferences.Editor ed = sharedPref.edit();
+            ed.putLong("elapsed_time", elapsedTime);
+            ed.putString("elapsed_time_hhmmss", strElapsedTime);
+            ed.putInt("total_questions", totalQuestions);
+            ed.putInt("correct_answers", correctAnswers);
+            ed.putInt("current_question_number", questionManager.getCurrentQuestionNumber());
+            ed.apply();
+
+            creatingActivity = false;
+        }
+
+        super.onPause();
+    }
+
+    // Event called when the application is reactivated or when the rotation of the device has been completed
+    // Values previously saved in onPause() are restored here to ensure user experience continuity
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        // Restore the selected preferences from settings
+        saveState = sharedPref.getBoolean("saveOnClose", false);
+        darkTheme = sharedPref.getBoolean("darkTheme", false);
+
+        // Restore the previous state if the saveState preference is on or if we are NOT creating the activity
+        // (for example, when doing orientation flip, or app deactivate/activate)
+        if (saveState || !creatingActivity) {
+            // Restore the saved values
+            btnTime.setText(sharedPref.getString("elapsed_time_hhmmss", getResources().getString(R.string.initial_time)));
+            //long elapsedTime = sharedPref.getLong("elapsed_time", 0);
+            totalQuestions = sharedPref.getInt("total_questions", MAX_QUESTIONS);
+            correctAnswers = sharedPref.getInt("correct_answers", 0);
+            //int currentQuestion = sharedPref.getInt("current_question_number", 1);
+        }
+
+        creatingActivity = false;
+    }
+
     @Override
     protected void onStop() {
         if (quizInProgress)
@@ -376,13 +488,28 @@ public class HistoryQuizActivity extends AppCompatActivity {
 
         switch (item.getItemId()) {
             case android.R.id.home:
-                super.onBackPressed();
-                break;
+                this.onBackPressed();
             default:
                 ret = super.onOptionsItemSelected(item);
                 break;
         }
 
         return ret;
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (quizInProgress) {
+            Snackbar.make(findViewById(android.R.id.content), "Quiz is in progress. If you want to cancel it, please tap on \"End Quiz\"", Snackbar.LENGTH_LONG)
+                    .setAction("OK", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                        }
+                    })
+                    .setActionTextColor(getResources().getColor(android.R.color.holo_red_light ))
+                    .show();
+        }
+        else
+            super.onBackPressed();  // Only return if no quiz is in progress
     }
 }

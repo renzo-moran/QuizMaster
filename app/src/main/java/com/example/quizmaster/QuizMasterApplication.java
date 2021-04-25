@@ -276,10 +276,10 @@ public class QuizMasterApplication extends Application {
         return timeString;
     }
 
-    public void resetQuizResult(){
+    public void resetQuizResult(String category){
         SQLiteDatabase db = helper.getWritableDatabase();
 
-        db.execSQL("DELETE FROM tbl_quiz_result");
+        db.execSQL("DELETE FROM tbl_quiz_result WHERE quiz_category = '" + category + "'");
     }
 
     /**

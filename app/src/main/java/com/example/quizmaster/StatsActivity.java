@@ -25,7 +25,10 @@ import java.util.HashMap;
 
 public class StatsActivity extends AppCompatActivity {
 
-    public final String HIGHEST_SCORE_KEY = "historyHighestScore";
+    public final String HISTORY_HIGHEST_SCORE_KEY = "historyHighestScore";
+    public final String MATH_HIGHEST_SCORE_KEY = "mathHighestScore";
+    public final String CATEGORY_HISTORY = "history";
+    public final String CATEGORY_MATH = "math";
 
     private RadioButton rdbHistory;
     private RadioButton rdbMath;
@@ -43,6 +46,9 @@ public class StatsActivity extends AppCompatActivity {
     private ViewGroup layout_container;
     private TextView lblFloatData;
     private TextView lblFloatScore;
+    private TextView lblHighScore;
+    private String selectedCategory;
+    private int highScore;
 
     private SharedPreferences sharedPref; // Will hold the SharedPreferences object
 
@@ -53,7 +59,7 @@ public class StatsActivity extends AppCompatActivity {
 
         PreferenceManager.setDefaultValues(this, R.xml.root_preferences, false);
         sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-
+        selectedCategory = CATEGORY_HISTORY;
         // Set the theme according to preference
         if (sharedPref.getBoolean("darkTheme", false))
             setTheme(R.style.DarkTheme);
@@ -99,10 +105,11 @@ public class StatsActivity extends AppCompatActivity {
         layout_container = findViewById(R.id.layout_container);
         lblFloatData = findViewById(R.id.lblFloatData);
         lblFloatScore = findViewById(R.id.lblFloatScore);
+        lblHighScore = findViewById(R.id.lblHighScore);
 
         rdbHistory.setChecked(true);
-        setStatistics("history");
-        int highScore = sharedPref.getInt(HIGHEST_SCORE_KEY, 0);
+        setStatistics(selectedCategory);
+        highScore = sharedPref.getInt(HISTORY_HIGHEST_SCORE_KEY, 0);
         txtHighScore.setText(String.valueOf(highScore));
 
         View parentLayout = findViewById(android.R.id.content);
@@ -131,8 +138,8 @@ public class StatsActivity extends AppCompatActivity {
                             })
                             .setActionTextColor(getResources().getColor(android.R.color.holo_red_light ))
                             .show();
-
-                    setStatistics("history");
+                    selectedCategory = CATEGORY_HISTORY;
+                    setStatistics(selectedCategory);
                 }else if(rdbMath.isChecked()) {
 
                     Snackbar.make(findViewById(android.R.id.content), "Math Statistics", Snackbar.LENGTH_LONG)
@@ -144,7 +151,8 @@ public class StatsActivity extends AppCompatActivity {
                             })
                             .setActionTextColor(getResources().getColor(android.R.color.holo_red_light ))
                             .show();
-                    setStatistics("math");
+                    selectedCategory = CATEGORY_MATH;
+                    setStatistics(selectedCategory);
                 }
             }
         });
@@ -187,12 +195,12 @@ public class StatsActivity extends AppCompatActivity {
                 lblFloatData.setVisibility(View.INVISIBLE);
                 lblFloatScore.setVisibility(View.INVISIBLE);
 
-                ((QuizMasterApplication)getApplication()).resetQuizResult();
-
-                if(rdbHistory.isChecked() == true)
+                ((QuizMasterApplication)getApplication()).resetQuizResult(selectedCategory);
+                setStatistics(selectedCategory);
+                /*if(rdbHistory.isChecked() == true)
                     setStatistics("history");
                 else
-                    setStatistics("math");
+                    setStatistics("math");*/
             }
         });
 
@@ -206,7 +214,10 @@ public class StatsActivity extends AppCompatActivity {
                 lblFloatScore.setVisibility(View.INVISIBLE);
 
                 SharedPreferences.Editor ed = sharedPref.edit();
-                ed.putInt(HIGHEST_SCORE_KEY, 0);
+                if(selectedCategory.equals(CATEGORY_HISTORY))
+                    ed.putInt(HISTORY_HIGHEST_SCORE_KEY, 0);
+                else
+                    ed.putInt(MATH_HIGHEST_SCORE_KEY, 0);
                 ed.apply();
 
                 txtHighScore.setText("0");
@@ -228,6 +239,16 @@ public class StatsActivity extends AppCompatActivity {
         txtAllRatio.setText(statsMap.get("ALL_RATIO").toString());
         txtAllAvgTime.setText(statsMap.get("ALL_AVG_TIME").toString());
         txtAllAvgScore.setText(statsMap.get("ALL_AVG_SCORE").toString());
+
+
+        if(category.equals(CATEGORY_HISTORY)) {
+            highScore = sharedPref.getInt(HISTORY_HIGHEST_SCORE_KEY, 0);
+            lblHighScore.setText("History Highest Score");
+        }else {
+            highScore = sharedPref.getInt(MATH_HIGHEST_SCORE_KEY, 0);
+            lblHighScore.setText("Math Highest Score");
+        }
+        txtHighScore.setText(String.valueOf(highScore));
 
     }
     @Override

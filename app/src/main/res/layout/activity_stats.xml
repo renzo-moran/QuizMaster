@@ -217,7 +217,7 @@
                     android:id="@+id/lblHighScore"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Highest Score"
+                    android:text="History Highest Score"
                     android:textColor="#8D55EF"
                     android:textSize="16sp"
                     android:textStyle="bold" />

@@ -7,10 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Random;
 
 public class QuizMasterApplication extends Application {
 
@@ -39,6 +36,10 @@ public class QuizMasterApplication extends Application {
 
                 db.execSQL("CREATE TABLE IF NOT EXISTS tbl_quiz_result(" +
                         "quiz_category TEXT, correct_answer INTEGER, elapsed_time REAL, score INTEGER, time_stamp REAL)");
+
+
+                //insertQuiz();
+
             }
 
             @Override
@@ -143,64 +144,84 @@ public class QuizMasterApplication extends Application {
                     "19,'math','MC','What is the largest two digits prime number?','96','97','98', '99', '97')");
             db.execSQL("INSERT INTO tbl_quiz_questions VALUES (" +
                     "20,'math','MC','What is the average value of 25,20,23 and 22?','20','21.5','22.5', '24', '22.5')");
+
         }
 
         cursor.close();
+
     }
 
     /**
-     * Get 10 quiz questions randomly
+     * Get 10 quizzes randomly
      * @param quizCategory 'math' or 'history'
-     * @param requestedNumberOfQuestions how many questions need to be returned
      * @return ArrayList<HashMap> HashMap's keys are same to tbl_quiz_questions table columns' name
      */
-    public ArrayList<HashMap> getQuizQuestions(String quizCategory, int requestedNumberOfQuestions){
+    public ArrayList<HashMap> getQuizzes(String quizCategory){
 
         ArrayList<HashMap> rtnArrayList = new ArrayList<>();
+
+
         ArrayList<Integer> quizNumList = new ArrayList<Integer>();
 
-        //Retrieve all questions of the quizCategory from db
+        //get 10 quiz random number from 1 to 20
+        while( quizNumList.size() < 10) {
+            int randomNum = getRandom(1,20);
+
+            if(!quizNumList.contains(randomNum)){
+                quizNumList.add(randomNum);
+            }
+        }
+        String quizNumForSQL = "";
+        for(int i = 0; i < quizNumList.size(); i++){
+            quizNumForSQL += quizNumList.get(i);
+            if(i != quizNumList.size() - 1){
+                quizNumForSQL += ",";
+            }
+
+        }
+
+        //retrieve from db
         SQLiteDatabase db =  helper.getReadableDatabase();
         Cursor cursor = db.rawQuery(
                 "SELECT * " +
-                        "FROM tbl_quiz_questions WHERE quest_category = '" + quizCategory + "'", null);
+                        "FROM tbl_quiz_questions WHERE quest_no IN (" +
+                        quizNumForSQL + ") AND quest_category = '" + quizCategory + "'", null);
 
-        int totalFetchedRecords = cursor.getCount();
-        if (totalFetchedRecords < 1) {  // There is no record
+        if(cursor.getCount() < 1){
+            //TODO return error " there is no record"
+        }else{
+            if(cursor.moveToFirst()){
+                do{
+                    HashMap quizMap = new HashMap();
+                    quizMap.put("quest_no", cursor.getInt(0));
+                    quizMap.put("quest_category", cursor.getString(1));
+                    quizMap.put("quest_type", cursor.getString(2));
+                    quizMap.put("quest_text", cursor.getString(3));
+                    quizMap.put("quest_option1", cursor.getString(4));
+                    quizMap.put("quest_option2", cursor.getString(5));
+                    quizMap.put("quest_option3", cursor.getString(6));
+                    quizMap.put("quest_option4", cursor.getString(7));
+                    quizMap.put("quest_option5", cursor.getString(8));
+
+                    rtnArrayList.add(quizMap);
+
+                } while (cursor.moveToNext());
+            }
             cursor.close();
             db.close();
-            return null;
         }
-
-        int questionsToReturn = Math.min(requestedNumberOfQuestions, totalFetchedRecords);  // How many questions will be returned
-
-        // Create a list of number from 0 until totalFetchedRecords and shuffle it
-        List<Integer> list = new ArrayList<>();
-        for (int i = 0; i < totalFetchedRecords; i++) list.add(i);
-        Collections.shuffle(list);
-
-        // Once suffled, get as many as questionsToReturn from cursor
-        for (int i=0; i<questionsToReturn; i++) {
-            if(cursor.moveToPosition(list.get(i))){
-                HashMap quizMap = new HashMap();
-                quizMap.put("quest_no", cursor.getInt(0));
-                quizMap.put("quest_category", cursor.getString(1));
-                quizMap.put("quest_type", cursor.getString(2));
-                quizMap.put("quest_text", cursor.getString(3));
-                quizMap.put("quest_option1", cursor.getString(4));
-                quizMap.put("quest_option2", cursor.getString(5));
-                quizMap.put("quest_option3", cursor.getString(6));
-                quizMap.put("quest_option4", cursor.getString(7));
-                quizMap.put("quest_option5", cursor.getString(8));
-
-                rtnArrayList.add(quizMap);
-            }
-        }
-        cursor.close();
-        db.close();
 
         return rtnArrayList;
     }
+
+    private static int getRandom (int a, int b) {
+        return(
+                b >= a
+                        ? a + (int)Math.floor(Math.random() * (b - a + 1))
+                        : getRandom(b, a)
+        );
+    }
+
 
     public HashMap getStats(String category){
         SQLiteDatabase db =  helper.getReadableDatabase();
@@ -216,22 +237,22 @@ public class QuizMasterApplication extends Application {
 
         int last_num_quiz_set;
         int last_num_correct;
-        int last_avg_elapsed_time;
+        String last_avg_elapsed_time;
         double last_avg_score;
         int all_num_quiz_set;
         int all_num_correct;
-        int all_avg_elapsed_time;
+        String all_avg_elapsed_time;
         double all_avg_score;
 
         cursor_last.moveToFirst();
         cursor_all.moveToFirst();
         last_num_quiz_set = cursor_last.getInt(0);
         last_num_correct = cursor_last.getInt(1);
-        last_avg_elapsed_time = cursor_last.getInt(2);
+        last_avg_elapsed_time = displayElapsedTime(cursor_last.getInt(2));
         last_avg_score = cursor_last.getDouble(3);
         all_num_quiz_set = cursor_all.getInt(0);
         all_num_correct = cursor_all.getInt(1);
-        all_avg_elapsed_time = cursor_all.getInt(2);
+        all_avg_elapsed_time = displayElapsedTime(cursor_all.getInt(2));
         all_avg_score = cursor_all.getDouble(3);
 
         int last_ratio = 0;
@@ -246,11 +267,13 @@ public class QuizMasterApplication extends Application {
         else
             all_ratio = Math.round(all_num_correct/all_num_quiz_set);
 
-        rtnMap.put("LAST_PLAYED", last_num_quiz_set * 10);
+
+
+        rtnMap.put("LAST_PLAYED", last_num_quiz_set);
         rtnMap.put("LAST_RATIO", last_ratio);
         rtnMap.put("LAST_AVG_TIME", last_avg_elapsed_time);
         rtnMap.put("LAST_AVG_SCORE", Math.round(last_avg_score));
-        rtnMap.put("ALL_PLAYED", all_num_quiz_set * 10);
+        rtnMap.put("ALL_PLAYED", all_num_quiz_set);
         rtnMap.put("ALL_RATIO", all_ratio);
         rtnMap.put("ALL_AVG_TIME", all_avg_elapsed_time);
         rtnMap.put("ALL_AVG_SCORE", Math.round(all_avg_score));
@@ -261,7 +284,21 @@ public class QuizMasterApplication extends Application {
         return rtnMap;
     }
 
-    public void resetTableStats(){
+    private String displayElapsedTime(double last_avg_elapsed_time) {
+        int elapsedTimeInSeconds = (int)(last_avg_elapsed_time/1000);  // Quiz elapsed time in milliseconds
+
+        // Express the elapsed time in hours, minutes and seconds
+        int hoursElapsedTime = elapsedTimeInSeconds/3600;
+        int remainderMinutes = elapsedTimeInSeconds % 3600;
+        int minutesElapsedTime = remainderMinutes/60;
+        int secondsElapsedTime = remainderMinutes % 60;
+
+        // Display the time
+        String timeString = String.format("%02d:%02d", minutesElapsedTime, secondsElapsedTime);
+        return timeString;
+    }
+
+    public void resetQuizResult(){
         SQLiteDatabase db = helper.getWritableDatabase();
 
         db.execSQL("DELETE FROM tbl_quiz_result");
@@ -288,5 +325,7 @@ public class QuizMasterApplication extends Application {
     public int getScore(int correctAnswers, long elapsedTime) {
         return (int)(correctAnswers*SCORING_FACTOR/ elapsedTime + correctAnswers);
     }
+
+
 
 }

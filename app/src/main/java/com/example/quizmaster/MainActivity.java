@@ -13,6 +13,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.MenuItem;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.example.quizmaster.R;
@@ -41,7 +42,6 @@ public class MainActivity extends AppCompatActivity {
         saveState = sharedPref.getBoolean("saveOnClose", false);
         darkTheme = sharedPref.getBoolean("darkTheme", false);
         String savedQuizType = sharedPref.getString("quiz_in_progress", MainActivity.NO_QUIZ_IN_PROGRESS);
-        //Toast.makeText(this, "OnCreate was called. darkTheme is " + darkTheme, Toast.LENGTH_LONG).show();
 
         // Set the theme according to preference
         if (darkTheme)
@@ -55,6 +55,13 @@ public class MainActivity extends AppCompatActivity {
 
         //PreferenceManager.setDefaultValues(this, R.xml.root_preferences, false);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+
+        // Set the background image according to darkTheme preference
+        if (darkTheme)
+            mDrawerLayout.setBackgroundResource(R.drawable.mainbw);
+        else
+            mDrawerLayout.setBackgroundResource(R.drawable.main);
+
         mToggle = new ActionBarDrawerToggle (this, mDrawerLayout, R.string.open, R.string.close);
         mDrawerLayout.addDrawerListener(mToggle);
         mToggle.syncState();

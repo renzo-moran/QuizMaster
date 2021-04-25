@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/linearLayoutQuiz"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/bck"
@@ -57,8 +58,8 @@
             android:layout_height="79dp"
             android:layout_gravity="end"
             android:layout_marginStart="50dp"
-            app:srcCompat="@drawable/questmark"
-            android:contentDescription="@string/question_result" />
+            android:contentDescription="@string/question_result"
+            app:srcCompat="@drawable/questmark" />
 
     </LinearLayout>
 

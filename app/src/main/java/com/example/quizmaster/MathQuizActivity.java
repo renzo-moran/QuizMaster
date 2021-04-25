@@ -79,16 +79,19 @@ public class MathQuizActivity  extends AppCompatActivity {
 
         // Set the theme according to preference
         darkTheme = sharedPref.getBoolean("darkTheme", false);
-        if (darkTheme) {
+        if (darkTheme)
             setTheme(R.style.DarkTheme);
-            // TODO: Change background to dark version
-        }
-        else {
+        else
             setTheme(R.style.AppTheme);
-            // TODO: Change background to light version
-        }
 
         setContentView(R.layout.activity_quiz);
+        LinearLayout mLinearLayout = (LinearLayout) findViewById(R.id.linearLayoutQuiz);
+
+        // Set the background image according to darkTheme preference
+        if (darkTheme)
+            mLinearLayout.setBackgroundResource(R.drawable.dark);
+        else
+            mLinearLayout.setBackgroundResource(R.drawable.bck);
 
         // Obtain the highest score saved for this type of quiz
         highestScore = sharedPref.getInt(HIGHEST_SCORE_KEY, 0);
@@ -468,21 +471,6 @@ public class MathQuizActivity  extends AppCompatActivity {
             builder.setMessage(abortMessage);
             builder.show();
         }
-    }
-
-    // Method to display a message
-    private void showMessage(String title, String messageContent) {
-        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-            }
-        });
-        builder.setCancelable(true);
-        builder.setTitle(title);
-        builder.setMessage(messageContent);
-        builder.show();
     }
 
     // Enable or disable GUI controls of the quiz according to the parameter

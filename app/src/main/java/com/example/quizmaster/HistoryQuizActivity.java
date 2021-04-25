@@ -4,6 +4,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.preference.PreferenceManager;
 
 import android.animation.Animator;
@@ -79,16 +81,19 @@ public class HistoryQuizActivity extends AppCompatActivity {
 
         // Set the theme according to preference
         darkTheme = sharedPref.getBoolean("darkTheme", false);
-        if (darkTheme) {
+        if (darkTheme)
             setTheme(R.style.DarkTheme);
-            // TODO: Change background to dark version
-        }
-        else {
+        else
             setTheme(R.style.AppTheme);
-            // TODO: Change background to light version
-        }
 
         setContentView(R.layout.activity_quiz);
+        LinearLayout mLinearLayout = (LinearLayout) findViewById(R.id.linearLayoutQuiz);
+
+        // Set the background image according to darkTheme preference
+        if (darkTheme)
+            mLinearLayout.setBackgroundResource(R.drawable.dark);
+        else
+            mLinearLayout.setBackgroundResource(R.drawable.bck);
 
         // Obtain the highest score saved for this type of quiz
         highestScore = sharedPref.getInt(HIGHEST_SCORE_KEY, 0);
@@ -250,7 +255,7 @@ public class HistoryQuizActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 quizTimer.pauseTimeKeeping(); // Pause timer to get user's confirmation
-                AlertDialog.Builder builder = new AlertDialog.Builder(HistoryQuizActivity.this);
+                AlertDialog.Builder builder = new AlertDialog.Builder(HistoryQuizActivity.this); //, R.style.DarkAlertDialogStyle);
                 builder.setTitle("Please confirm")
                         .setMessage("Are you sure you want to cancel the quiz?")
                         .setCancelable(true)
@@ -468,21 +473,6 @@ public class HistoryQuizActivity extends AppCompatActivity {
             builder.setMessage(abortMessage);
             builder.show();
         }
-    }
-
-    // Method to display a message
-    private void showMessage(String title, String messageContent) {
-        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-            }
-        });
-        builder.setCancelable(true);
-        builder.setTitle(title);
-        builder.setMessage(messageContent);
-        builder.show();
     }
 
     // Enable or disable GUI controls of the quiz according to the parameter

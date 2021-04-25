@@ -19,7 +19,7 @@ public class QuestionManager {
         this.quizType = quizType;
 
         questionList = new ArrayList<HashMap>();
-        questionList = maxQuestions > 0 ? application.getQuizzes(quizType)  // TODO: Be able to pass max number of questions to this method
+        questionList = maxQuestions > 0 ? application.getQuizQuestions(quizType, maxQuestions)
                                         : null;
 
         currentQuestionNumber = 0;
@@ -32,7 +32,7 @@ public class QuestionManager {
         this.quizType = quizType;
 
         questionList = new ArrayList<HashMap>();
-        questionList = totalQuestions > 0 ? application.getQuizzes(quizType)  // TODO: Change by the new method
+        questionList = totalQuestions > 0 ? application.getQuizQuestions(quizType, totalQuestions)
                                           : null;
 
         this.currentQuestionNumber = currentQuestionNumber - 1 < 0? 0 : currentQuestionNumber - 1;

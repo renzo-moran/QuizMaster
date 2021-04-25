@@ -25,8 +25,25 @@
         <item name="android:popupMenuStyle">@color/black</item>
         <item name="android:popupBackground">@color/black</item>
         <item name="android:textColor">@color/white</item>
+        <item name="android:radioButtonStyle">@style/DarkRadioButtonStyle</item>
+        <item name="radioButtonStyle">@style/DarkRadioButtonStyle</item>
+        <item name="android:alertDialogStyle">@style/DarkAlertDialogStyle</item>
         <item name="android:background">@null</item>
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
+    </style>
+
+    <style name="DarkRadioButtonStyle" parent="Widget.AppCompat.CompoundButton.RadioButton">
+        <item name="android:textColor">@color/white</item>
+        <item name="buttonTint">@color/colorAccent</item>
+    </style>
+
+    <style name="DarkAlertDialogStyle" parent="Theme.AppCompat.Dialog.Alert">
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:colorBackground">@color/white</item>
+        <item name="android:windowBackground">@color/black</item>
+        <item name="android:titleTextColor">@color/black</item>
+        <item name="android:background">@color/white</item>
+        <item name="android:textColor">@color/black</item>
     </style>
 
     <style name="NavigationDrawerStyle">

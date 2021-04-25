@@ -19,6 +19,8 @@ import com.example.quizmaster.R;
 import com.google.android.material.navigation.NavigationView;
 
 public class MainActivity extends AppCompatActivity {
+    public static final String NO_QUIZ_IN_PROGRESS = "none";
+
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mToggle;
 
@@ -38,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
         sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
 
         darkTheme = sharedPref.getBoolean("darkTheme", false);
+        String savedQuizType = sharedPref.getString("quiz_in_progress", MainActivity.NO_QUIZ_IN_PROGRESS);
         //Toast.makeText(this, "OnCreate was called. darkTheme is " + darkTheme, Toast.LENGTH_LONG).show();
 
         // Set the theme according to preference
@@ -58,6 +61,19 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         SetNavigationDrawer();
+
+        // If there was a quiz in progress before, resume it
+        switch (savedQuizType) {
+            case HistoryQuizActivity.QUIZ_TYPE:
+                startActivity(new Intent(getApplicationContext(), HistoryQuizActivity.class));
+                break;
+//            case MathQuizActivity.QUIZ_TYPE:
+//                startActivity(new Intent(getApplicationContext(), MathQuizActivity.class));
+//                break;
+            case NO_QUIZ_IN_PROGRESS:
+            default:
+                break;
+        }
     }
 
     private void SetNavigationDrawer() {
@@ -72,11 +88,9 @@ public class MainActivity extends AppCompatActivity {
                 Fragment frag = null;
                 switch (item.getItemId()) {
                     case R.id.history_quiz:
-                        //frag = new HistoryQuizFragment();
                         startActivity(new Intent(getApplicationContext(), HistoryQuizActivity.class));
                         break;
                     case R.id.math_quiz:
-                        //frag = new MathQuizFragment();
                         startActivity(new Intent(getApplicationContext(), MathQuizActivity.class));
                         break;
                     case R.id.settings:

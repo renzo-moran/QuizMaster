@@ -2,36 +2,40 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:backgroundTint="#FFFFFF"
+    android:scrollbarTrackVertical="@android:drawable/ic_menu_close_clear_cancel"
     tools:context=".StatsActivity">
 
 
     <LinearLayout
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
         android:orientation="vertical"
-        tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="215dp">
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="0dp">
 
         <TableLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
-            android:layout_marginTop="150dp"
             android:layout_marginRight="20dp">
 
             <TableRow
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="80dp"
-                android:paddingLeft="50dp">
+                android:gravity="center">
 
                 <RadioGroup
                     android:id="@+id/rdbGroup"
                     android:layout_width="250dp"
                     android:layout_height="wrap_content"
+                    android:gravity="center"
                     android:orientation="horizontal">
 
                     <RadioButton
@@ -39,6 +43,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
+                        android:gravity="center_vertical"
                         android:text="@string/statistics_radio_history" />
 
                     <RadioButton
@@ -46,6 +51,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
+                        android:gravity="center_vertical"
                         android:text="@string/statistics_radio_math" />
                 </RadioGroup>
             </TableRow>
@@ -57,7 +63,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:layout_marginBottom="80dp"
+            android:layout_marginBottom="20dp"
             android:background="#8F9CCBF1">
 
             <TableRow
@@ -78,6 +84,7 @@
                     android:layout_weight="1"
                     android:gravity="center"
                     android:text="@string/statistics_top_quizzes"
+                    android:textSize="16dp"
                     android:textStyle="bold" />
 
                 <TextView
@@ -87,6 +94,7 @@
                     android:layout_weight="1"
                     android:gravity="center"
                     android:text="@string/statistics_top_solved"
+                    android:textSize="16dp"
                     android:textStyle="bold" />
 
                 <TextView
@@ -96,6 +104,7 @@
                     android:layout_weight="1"
                     android:gravity="center"
                     android:text="@string/statistics_top_avgTime"
+                    android:textSize="16dp"
                     android:textStyle="bold" />
 
                 <TextView
@@ -105,6 +114,7 @@
                     android:layout_weight="1"
                     android:gravity="center"
                     android:text="@string/statistics_top_avgScore"
+                    android:textSize="16dp"
                     android:textStyle="bold" />
             </TableRow>
 
@@ -118,7 +128,8 @@
                     android:layout_height="30dp"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:text="@string/statistics_left_last" />
+                    android:text="@string/statistics_left_last"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/txtLastPlayed"
@@ -159,7 +170,8 @@
                     android:layout_height="30dp"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:text="@string/statistics_left_all" />
+                    android:text="@string/statistics_left_all"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/txtAllPlayed"
@@ -192,27 +204,126 @@
 
         </TableLayout>
 
-        <androidx.coordinatorlayout.widget.CoordinatorLayout
+        <TableLayout
             android:layout_width="match_parent"
-            android:layout_height="75dp"
-            android:layout_gravity="center_vertical"
-            android:layout_marginTop="100dp"
-            app:layout_constraintBottom_toBottomOf="parent">
+            android:layout_height="40dp">
 
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/floatButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:background="#673AB7"
-                android:contentDescription="End Quiz"
-                android:src="@drawable/ic_baseline_close_24"
-                android:text="Quit Quiz"
-                android:textAllCaps="true"
-                android:textColor="#FFFFFF"
-                app:backgroundTint="@color/lightAccent"
-                app:fabSize="normal"
-                app:icon="@drawable/ic_baseline_close_24" />
-        </androidx.coordinatorlayout.widget.CoordinatorLayout>
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center">
+
+                <TextView
+                    android:id="@+id/lblHighScore"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Highest Score"
+                    android:textColor="#8D55EF"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/txtHighScore"
+                    android:layout_width="80dp"
+                    android:layout_height="wrap_content"
+                    android:textAlignment="center"
+                    android:textSize="16sp" />
+
+            </TableRow>
+
+        </TableLayout>
+
     </LinearLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <TextView
+        android:id="@+id/lblFloatData"
+        android:layout_width="120dp"
+        android:layout_height="40dp"
+        android:layout_marginEnd="16dp"
+        android:background="@android:drawable/editbox_background_normal"
+        android:backgroundTint="#676D91"
+        android:elevation="6dp"
+        android:text="Reset Data"
+        android:textAlignment="center"
+        android:textColor="#ffffff"
+        android:textSize="18sp"
+        android:visibility="invisible"
+        app:layout_anchorGravity="center"
+        app:layout_constraintBottom_toBottomOf="@+id/float_data"
+        app:layout_constraintEnd_toStartOf="@+id/float_data"
+        app:layout_constraintTop_toTopOf="@+id/float_data" />
+
+    <TextView
+        android:id="@+id/lblFloatScore"
+        android:layout_width="180dp"
+        android:layout_height="40dp"
+        android:layout_marginEnd="16dp"
+        android:background="@android:drawable/editbox_background_normal"
+        android:backgroundTint="#676D91"
+        android:elevation="6dp"
+        android:text="Reset Highest Score"
+        android:textAlignment="center"
+        android:textColor="#ffffff"
+        android:textSize="18dp"
+        android:visibility="invisible"
+        app:layout_anchorGravity="center"
+        app:layout_constraintBottom_toBottomOf="@+id/float_high_score"
+        app:layout_constraintEnd_toStartOf="@+id/float_high_score"
+        app:layout_constraintTop_toTopOf="@+id/float_high_score" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/float_data"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:clickable="true"
+        android:tint="@color/white"
+        android:visibility="invisible"
+        app:backgroundTint="#FF7CA8"
+        app:layout_constraintBottom_toTopOf="@+id/float_reset"
+        app:layout_constraintEnd_toEndOf="@+id/float_reset"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0"
+        app:srcCompat="@android:drawable/ic_popup_sync"
+        tools:ignore="MissingConstraints" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/float_reset"
+        android:layout_width="wrap_content"
+        android:layout_height="56dp"
+        android:layout_gravity="right"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="24dp"
+        android:clickable="true"
+        app:backgroundTint="#673AB7"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@android:drawable/ic_popup_sync"
+        tools:ignore="MissingConstraints,NotSibling" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/float_high_score"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:clickable="true"
+        android:visibility="invisible"
+        app:backgroundTint="#00BCD4"
+        app:layout_constraintBottom_toTopOf="@+id/float_data"
+        app:layout_constraintEnd_toEndOf="@+id/float_data"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0"
+        app:srcCompat="@android:drawable/ic_popup_sync" />
 </androidx.constraintlayout.widget.ConstraintLayout>

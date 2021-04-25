@@ -7,9 +7,13 @@ import androidx.preference.PreferenceManager;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.provider.MediaStore;
+import android.transition.TransitionManager;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -20,6 +24,8 @@ import com.google.android.material.snackbar.Snackbar;
 import java.util.HashMap;
 
 public class StatsActivity extends AppCompatActivity {
+
+    public final String HIGHEST_SCORE_KEY = "historyHighestScore";
 
     private RadioButton rdbHistory;
     private RadioButton rdbMath;
@@ -32,16 +38,20 @@ public class StatsActivity extends AppCompatActivity {
     private TextView txtAllRatio;
     private TextView txtAllAvgTime;
     private TextView txtAllAvgScore;
-    private FloatingActionButton fab;
+    private FloatingActionButton fab_reset, fab_data, fab_score;
+    private TextView txtHighScore;
+    private ViewGroup layout_container;
+    private TextView lblFloatData;
+    private TextView lblFloatScore;
 
     private SharedPreferences sharedPref; // Will hold the SharedPreferences object
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
+        super.onCreate(savedInstanceState);
 
-
-        //PreferenceManager.setDefaultValues(this, R.xml.root_preferences, false);
+        PreferenceManager.setDefaultValues(this, R.xml.root_preferences, false);
         sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
 
         // Set the theme according to preference
@@ -50,7 +60,7 @@ public class StatsActivity extends AppCompatActivity {
         else
             setTheme(R.style.AppTheme);
 
-        super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_stats);
 
         ActionBar actionBar = getSupportActionBar();
@@ -58,15 +68,16 @@ public class StatsActivity extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
-        fab = findViewById(R.id.floatButton);
+ /*       fab = findViewById(R.id.floatButton);
 
         fab.setOnClickListener(new View.OnClickListener(){
 
             @Override
             public void onClick(View v) {
+
                 StatsActivity.super.onBackPressed();
             }
-        });
+        });*/
         rdbGroup = (RadioGroup) findViewById(R.id.rdbGroup);
         rdbHistory = (RadioButton) findViewById(R.id.rdbHistory);
         rdbMath = (RadioButton)findViewById(R.id.rdbMath);
@@ -78,11 +89,24 @@ public class StatsActivity extends AppCompatActivity {
         txtAllRatio = findViewById(R.id.txtAllRatio);
         txtAllAvgTime = findViewById(R.id.txtAllAvgTime);
         txtAllAvgScore = findViewById(R.id.txtAllAvgScore);
+        txtHighScore = findViewById(R.id.txtHighScore);
+        lblFloatData = findViewById(R.id.lblFloatData);
+        lblFloatData = findViewById(R.id.lblFloatScore);
+
+        fab_reset = findViewById(R.id.float_reset);
+        fab_data = findViewById(R.id.float_data);
+        fab_score = findViewById(R.id.float_high_score);
+        layout_container = findViewById(R.id.layout_container);
+        lblFloatData = findViewById(R.id.lblFloatData);
+        lblFloatScore = findViewById(R.id.lblFloatScore);
 
         rdbHistory.setChecked(true);
         setStatistics("history");
+        int highScore = sharedPref.getInt(HIGHEST_SCORE_KEY, 0);
+        txtHighScore.setText(String.valueOf(highScore));
+
         View parentLayout = findViewById(android.R.id.content);
-        Snackbar.make(parentLayout, "This is main activity", Snackbar.LENGTH_LONG)
+/*        Snackbar.make(parentLayout, "This is main activity", Snackbar.LENGTH_LONG)
                 .setAction("CLOSE", new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -90,7 +114,7 @@ public class StatsActivity extends AppCompatActivity {
                     }
                 })
                 .setActionTextColor(getResources().getColor(android.R.color.holo_red_light ))
-                .show();
+                .show();*/
 
         rdbGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -122,6 +146,70 @@ public class StatsActivity extends AppCompatActivity {
                             .show();
                     setStatistics("math");
                 }
+            }
+        });
+
+        fab_reset.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+
+                if(fab_data.getVisibility() == View.INVISIBLE) {
+                    fab_data.setVisibility(View.VISIBLE);
+                    fab_score.setVisibility(View.VISIBLE);
+                    lblFloatData.setVisibility(View.VISIBLE);
+                    lblFloatScore.setVisibility(View.VISIBLE);
+                }else{
+                    fab_data.setVisibility(View.INVISIBLE);
+                    fab_score.setVisibility(View.INVISIBLE);
+                    lblFloatData.setVisibility(View.INVISIBLE);
+                    lblFloatScore.setVisibility(View.INVISIBLE);
+                }
+            }
+        });
+
+        layout_container.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                fab_data.setVisibility(View.INVISIBLE);
+                fab_score.setVisibility(View.INVISIBLE);
+                lblFloatData.setVisibility(View.INVISIBLE);
+                lblFloatScore.setVisibility(View.INVISIBLE);
+            }
+        });
+
+        fab_data.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                fab_data.setVisibility(View.INVISIBLE);
+                fab_score.setVisibility(View.INVISIBLE);
+                lblFloatData.setVisibility(View.INVISIBLE);
+                lblFloatScore.setVisibility(View.INVISIBLE);
+
+                ((QuizMasterApplication)getApplication()).resetQuizResult();
+
+                if(rdbHistory.isChecked() == true)
+                    setStatistics("history");
+                else
+                    setStatistics("math");
+            }
+        });
+
+        fab_score.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                fab_data.setVisibility(View.INVISIBLE);
+                fab_score.setVisibility(View.INVISIBLE);
+                lblFloatData.setVisibility(View.INVISIBLE);
+                lblFloatScore.setVisibility(View.INVISIBLE);
+
+                SharedPreferences.Editor ed = sharedPref.edit();
+                ed.putInt(HIGHEST_SCORE_KEY, 0);
+                ed.apply();
+
+                txtHighScore.setText("0");
             }
         });
 

@@ -7,7 +7,9 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 
 public class QuizMasterApplication extends Application {
 
@@ -36,10 +38,6 @@ public class QuizMasterApplication extends Application {
 
                 db.execSQL("CREATE TABLE IF NOT EXISTS tbl_quiz_result(" +
                         "quiz_category TEXT, correct_answer INTEGER, elapsed_time REAL, score INTEGER, time_stamp REAL)");
-
-
-                //insertQuiz();
-
             }
 
             @Override
@@ -144,84 +142,64 @@ public class QuizMasterApplication extends Application {
                     "19,'math','MC','What is the largest two digits prime number?','96','97','98', '99', '97')");
             db.execSQL("INSERT INTO tbl_quiz_questions VALUES (" +
                     "20,'math','MC','What is the average value of 25,20,23 and 22?','20','21.5','22.5', '24', '22.5')");
-
         }
 
         cursor.close();
-
     }
 
     /**
-     * Get 10 quizzes randomly
+     * Get 10 quiz questions randomly
      * @param quizCategory 'math' or 'history'
+     * @param requestedNumberOfQuestions how many questions need to be returned
      * @return ArrayList<HashMap> HashMap's keys are same to tbl_quiz_questions table columns' name
      */
-    public ArrayList<HashMap> getQuizzes(String quizCategory){
+    public ArrayList<HashMap> getQuizQuestions(String quizCategory, int requestedNumberOfQuestions){
 
         ArrayList<HashMap> rtnArrayList = new ArrayList<>();
-
-
         ArrayList<Integer> quizNumList = new ArrayList<Integer>();
 
-        //get 10 quiz random number from 1 to 20
-        while( quizNumList.size() < 10) {
-            int randomNum = getRandom(1,20);
-
-            if(!quizNumList.contains(randomNum)){
-                quizNumList.add(randomNum);
-            }
-        }
-        String quizNumForSQL = "";
-        for(int i = 0; i < quizNumList.size(); i++){
-            quizNumForSQL += quizNumList.get(i);
-            if(i != quizNumList.size() - 1){
-                quizNumForSQL += ",";
-            }
-
-        }
-
-        //retrieve from db
+        //Retrieve all questions of the quizCategory from db
         SQLiteDatabase db =  helper.getReadableDatabase();
         Cursor cursor = db.rawQuery(
                 "SELECT * " +
-                        "FROM tbl_quiz_questions WHERE quest_no IN (" +
-                        quizNumForSQL + ") AND quest_category = '" + quizCategory + "'", null);
+                        "FROM tbl_quiz_questions WHERE quest_category = '" + quizCategory + "'", null);
 
-        if(cursor.getCount() < 1){
-            //TODO return error " there is no record"
-        }else{
-            if(cursor.moveToFirst()){
-                do{
-                    HashMap quizMap = new HashMap();
-                    quizMap.put("quest_no", cursor.getInt(0));
-                    quizMap.put("quest_category", cursor.getString(1));
-                    quizMap.put("quest_type", cursor.getString(2));
-                    quizMap.put("quest_text", cursor.getString(3));
-                    quizMap.put("quest_option1", cursor.getString(4));
-                    quizMap.put("quest_option2", cursor.getString(5));
-                    quizMap.put("quest_option3", cursor.getString(6));
-                    quizMap.put("quest_option4", cursor.getString(7));
-                    quizMap.put("quest_option5", cursor.getString(8));
-
-                    rtnArrayList.add(quizMap);
-
-                } while (cursor.moveToNext());
-            }
+        int totalFetchedRecords = cursor.getCount();
+        if (totalFetchedRecords < 1) {  // There is no record
             cursor.close();
             db.close();
+            return null;
         }
+
+        int questionsToReturn = Math.min(requestedNumberOfQuestions, totalFetchedRecords);  // How many questions will be returned
+
+        // Create a list of number from 0 until totalFetchedRecords and shuffle it
+        List<Integer> list = new ArrayList<>();
+        for (int i = 0; i < totalFetchedRecords; i++) list.add(i);
+        Collections.shuffle(list);
+
+        // Once suffled, get as many as questionsToReturn from cursor
+        for (int i=0; i<questionsToReturn; i++) {
+            if(cursor.moveToPosition(list.get(i))){
+                HashMap quizMap = new HashMap();
+                quizMap.put("quest_no", cursor.getInt(0));
+                quizMap.put("quest_category", cursor.getString(1));
+                quizMap.put("quest_type", cursor.getString(2));
+                quizMap.put("quest_text", cursor.getString(3));
+                quizMap.put("quest_option1", cursor.getString(4));
+                quizMap.put("quest_option2", cursor.getString(5));
+                quizMap.put("quest_option3", cursor.getString(6));
+                quizMap.put("quest_option4", cursor.getString(7));
+                quizMap.put("quest_option5", cursor.getString(8));
+
+                rtnArrayList.add(quizMap);
+            }
+        }
+        cursor.close();
+        db.close();
 
         return rtnArrayList;
     }
-
-    private static int getRandom (int a, int b) {
-        return(
-                b >= a
-                        ? a + (int)Math.floor(Math.random() * (b - a + 1))
-                        : getRandom(b, a)
-        );
-    }
-
 
     public HashMap getStats(String category){
         SQLiteDatabase db =  helper.getReadableDatabase();

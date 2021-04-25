@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/background"
+    android:background="@drawable/bck"
     android:orientation="vertical"
     tools:context=".HistoryQuizActivity">
 
@@ -19,7 +19,7 @@
             android:layout_height="35dp"
             android:layout_margin="30dp"
             android:gravity="center"
-            android:text="Question 1"
+            android:text="@string/question_1"
             android:textColor="#E91E63"
             android:textSize="24sp"
             android:textStyle="bold" />
@@ -35,7 +35,7 @@
             style="@style/TimerStyle"
             android:layout_width="113dp"
             android:layout_height="70dp"
-            android:layout_gravity="left"
+            android:layout_gravity="start"
             android:layout_margin="50dp"
             android:backgroundTint="#F3EAA0"
             android:text="@string/initial_time" />
@@ -44,8 +44,8 @@
             android:id="@+id/imageView"
             android:layout_width="100dp"
             android:layout_height="79dp"
-            android:layout_gravity="right"
-            android:layout_marginLeft="50dp"
+            android:layout_gravity="end"
+            android:layout_marginStart="50dp"
             app:srcCompat="@drawable/questmark" />
     </LinearLayout>
 
@@ -56,9 +56,8 @@
         android:layout_gravity="center"
         android:background="#EFD68C"
         android:gravity="center"
-        android:text="history"
         android:textAlignment="center"
-        android:textSize="30sp" />
+        android:textSize="24sp" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -66,6 +65,29 @@
         android:orientation="vertical">
 
         <LinearLayout
+            android:id="@+id/linearLayoutTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/editTextAnswer"
+                android:layout_width="0dp"
+                android:layout_height="75dp"
+                android:layout_marginStart="30dp"
+                android:layout_marginEnd="30dp"
+                android:layout_weight="1"
+                android:ems="10"
+                android:hint="@string/write_answer"
+                android:inputType="textPersonName"
+                android:textAlignment="center"
+                android:textSize="24sp"
+                android:importantForAutofill="no" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linearLayoutRadio1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
@@ -89,6 +111,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/linearLayoutRadio2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
@@ -114,7 +137,8 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="110dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
         android:orientation="horizontal">
 
         <Button
@@ -122,8 +146,7 @@
             style="@style/ButtonWith3DText"
             android:layout_width="131dp"
             android:layout_height="65dp"
-            android:layout_marginLeft="40dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginStart="40dp"
             android:backgroundTint="#D093DA"
             android:text="@string/skip" />
 
@@ -132,19 +155,19 @@
             style="@style/ButtonWith3DText"
             android:layout_width="131dp"
             android:layout_height="65dp"
-            android:layout_marginLeft="70dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginStart="70dp"
             android:backgroundTint="#CF79DD"
             android:text="@string/answer" />
     </LinearLayout>
 
-        <Button
-            android:id="@+id/btnEnd"
-            style="@style/ButtonWith3DText"
-            android:layout_width="132dp"
-            android:layout_height="59dp"
-            android:layout_gravity="center"
-            android:backgroundTint="#B39DDC"
-            android:text="@string/exit" />
+    <Button
+        android:id="@+id/btnEnd"
+        style="@style/ButtonWith3DText"
+        android:layout_width="132dp"
+        android:layout_height="59dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp"
+        android:backgroundTint="#B39DDC"
+        android:text="@string/exit" />
 
 </LinearLayout>

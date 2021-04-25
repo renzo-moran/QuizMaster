@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
 
         PreferenceManager.setDefaultValues(this, R.xml.root_preferences, false);
         sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-
+        saveState = sharedPref.getBoolean("saveOnClose", false);
         darkTheme = sharedPref.getBoolean("darkTheme", false);
         String savedQuizType = sharedPref.getString("quiz_in_progress", MainActivity.NO_QUIZ_IN_PROGRESS);
         //Toast.makeText(this, "OnCreate was called. darkTheme is " + darkTheme, Toast.LENGTH_LONG).show();
@@ -62,18 +62,21 @@ public class MainActivity extends AppCompatActivity {
 
         SetNavigationDrawer();
 
-        // If there was a quiz in progress before, resume it
-        switch (savedQuizType) {
-            case HistoryQuizActivity.QUIZ_TYPE:
-                startActivity(new Intent(getApplicationContext(), HistoryQuizActivity.class));
-                break;
-//            case MathQuizActivity.QUIZ_TYPE:
-//                startActivity(new Intent(getApplicationContext(), MathQuizActivity.class));
-//                break;
-            case NO_QUIZ_IN_PROGRESS:
-            default:
-                // Do nothing here - continue with menu being displayed
-                break;
+        // If parameter to save ongoing quiz on close is set, check if there was a quiz in progress
+        if (saveState) {
+            // If there was a quiz in progress before, resume it
+            switch (savedQuizType) {
+                case HistoryQuizActivity.QUIZ_TYPE:
+                    startActivity(new Intent(getApplicationContext(), HistoryQuizActivity.class));
+                    break;
+                case MathQuizActivity.QUIZ_TYPE:
+                    startActivity(new Intent(getApplicationContext(), MathQuizActivity.class));
+                    break;
+                case NO_QUIZ_IN_PROGRESS:
+                default:
+                    // Do nothing here - continue with menu being displayed
+                    break;
+            }
         }
     }
 

@@ -16,7 +16,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
@@ -50,6 +52,9 @@ public class MathQuizActivity  extends AppCompatActivity {
     private TextView textViewQuestionNumber;
     private Button btnTime;
     private TextView textViewQuestion;
+    private LinearLayout linearLayoutTextVew;
+    private EditText editTextAnswer;
+    private LinearLayout linearLayoutRadio1, linearLayoutRadio2;
     private RadioButton rdbOption1, rdbOption2, rdbOption3, rdbOption4;
     private Button btnSkip, btnAnswer, btnEnd;
     private ImageView imageView;
@@ -83,7 +88,7 @@ public class MathQuizActivity  extends AppCompatActivity {
             // TODO: Change background to light version
         }
 
-        setContentView(R.layout.activity_history_quiz);
+        setContentView(R.layout.activity_quiz);
 
         // Obtain the highest score saved for this type of quiz
         highestScore = sharedPref.getInt(HIGHEST_SCORE_KEY, 0);
@@ -92,6 +97,10 @@ public class MathQuizActivity  extends AppCompatActivity {
         textViewQuestionNumber = (TextView)findViewById(R.id.textViewQuestionNumber);
         btnTime = (Button)findViewById(R.id.btnTime);
         textViewQuestion = (TextView)findViewById(R.id.textViewQuestion);
+        linearLayoutTextVew = (LinearLayout)findViewById(R.id.linearLayoutTextView);
+        editTextAnswer = (EditText)findViewById(R.id.editTextAnswer);
+        linearLayoutRadio1 = (LinearLayout)findViewById(R.id.linearLayoutRadio1);
+        linearLayoutRadio2 = (LinearLayout)findViewById(R.id.linearLayoutRadio2);
         rdbOption1 = (RadioButton)findViewById(R.id.rdbOption1);
         rdbOption2 = (RadioButton)findViewById(R.id.rdbOption2);
         rdbOption3 = (RadioButton)findViewById(R.id.rdbOption3);
@@ -184,9 +193,14 @@ public class MathQuizActivity  extends AppCompatActivity {
         btnAnswer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Check if an answer was effectively selected
+                // Check if an answer was effectively selected or entered
+                String questionType = questionHashMap.get("quest_type").toString();
+                // For question of type "WORDS", get the answer from the edit box and trim it
+                if (questionType.equals("WORDS"))
+                    playerAnswer = editTextAnswer.getText().toString().trim();
+
                 if (playerAnswer.isEmpty()) {
-                    Snackbar.make(findViewById(android.R.id.content), "Please, select an answer", Snackbar.LENGTH_SHORT)
+                    Snackbar.make(findViewById(android.R.id.content), "Please, provide an answer", Snackbar.LENGTH_SHORT)
                             .setAction("OK", new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
@@ -197,13 +211,14 @@ public class MathQuizActivity  extends AppCompatActivity {
                             .show();
                 }
                 else {
+                    playerAnswer = playerAnswer.toUpperCase(); // To compare with response in uppercase
                     // Set the corresponding smiley and increase the correct answers counter if response is correct
-                    if (playerAnswer.equals(questionHashMap.get("quest_option5").toString())) {
+                    if (playerAnswer.equals(questionHashMap.get("quest_option5").toString().toUpperCase())) {
                         correctAnswers++;
-                        imageView.setImageResource(R.drawable.smile);
+                        imageView.setImageResource(R.drawable.grsmile);
                     }
                     else {
-                        imageView.setImageResource(R.drawable.sad);
+                        imageView.setImageResource(R.drawable.redsad);
                     }
                     // Pause timer and perform animation
                     quizTimer.pauseTimeKeeping();
@@ -332,12 +347,16 @@ public class MathQuizActivity  extends AppCompatActivity {
         textViewQuestionNumber.setText(String.format("Question %d",questionManager.getCurrentQuestionNumber()));
         textViewQuestion.setText(questionHashMap.get("quest_text").toString());
         imageView.setImageResource(R.drawable.questmark);
+        editTextAnswer.setText("");
         playerAnswer = "";
 
         // Show the corresponding GUI controls for the answers depending on question type
         String questionType = questionHashMap.get("quest_type").toString();
         switch(questionType) {
             case "MC":  // Multiple Choice
+                linearLayoutRadio1.setVisibility(View.VISIBLE);
+                linearLayoutRadio2.setVisibility(View.VISIBLE);
+                linearLayoutTextVew.setVisibility(View.GONE);
                 rdbOption1.setVisibility(View.VISIBLE);
                 rdbOption2.setVisibility(View.VISIBLE);
                 rdbOption3.setVisibility(View.VISIBLE);
@@ -352,6 +371,9 @@ public class MathQuizActivity  extends AppCompatActivity {
                 rdbOption4.setChecked(false);
                 break;
             case "TF":  // True or False
+                linearLayoutRadio1.setVisibility(View.VISIBLE);
+                linearLayoutRadio2.setVisibility(View.GONE);
+                linearLayoutTextVew.setVisibility(View.GONE);
                 rdbOption1.setVisibility(View.VISIBLE);
                 rdbOption2.setVisibility(View.VISIBLE);
                 rdbOption3.setVisibility(View.INVISIBLE);
@@ -360,6 +382,11 @@ public class MathQuizActivity  extends AppCompatActivity {
                 rdbOption2.setText(questionHashMap.get("quest_option2").toString());
                 rdbOption1.setChecked(false);
                 rdbOption2.setChecked(false);
+                break;
+            case "WORDS":  // User enters text
+                linearLayoutRadio1.setVisibility(View.GONE);
+                linearLayoutRadio2.setVisibility(View.GONE);
+                linearLayoutTextVew.setVisibility(View.VISIBLE);
                 break;
             default:   // This part should never be reached
                 break;

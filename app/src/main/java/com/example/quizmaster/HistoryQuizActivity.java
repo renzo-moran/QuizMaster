@@ -69,11 +69,14 @@ public class HistoryQuizActivity extends AppCompatActivity {
 
     public HistoryQuizActivity SELF;
 
+    private boolean isFromOrientate;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         creatingActivity = true;
         SELF = this;
+        isFromOrientate = false;
 
         quizApplication = (QuizMasterApplication)getApplication();
         PreferenceManager.setDefaultValues(this, R.xml.root_preferences, false);
@@ -275,6 +278,7 @@ public class HistoryQuizActivity extends AppCompatActivity {
                         }).show();
             }
         });
+
     }
 
     // Manually controls the selection of radio buttons by deselecting the not-clicked ones
@@ -518,7 +522,6 @@ public class HistoryQuizActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-
         // Restore the selected preferences from settings
         saveState = sharedPref.getBoolean("saveOnClose", false);
         darkTheme = sharedPref.getBoolean("darkTheme", false);
@@ -541,7 +544,7 @@ public class HistoryQuizActivity extends AppCompatActivity {
 
     @Override
     protected void onStop() {
-        if (quizInProgress)
+        if (quizInProgress && !isFromOrientate)
             startService(new Intent(getApplicationContext(), QuizStopNotificationService.class));
 
         super.onStop();
@@ -576,5 +579,11 @@ public class HistoryQuizActivity extends AppCompatActivity {
         }
         else
             super.onBackPressed();  // Only return if no quiz is in progress
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        isFromOrientate = true;
     }
 }

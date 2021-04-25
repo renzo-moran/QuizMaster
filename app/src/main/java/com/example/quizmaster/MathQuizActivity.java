@@ -67,6 +67,8 @@ public class MathQuizActivity  extends AppCompatActivity {
 
     public MathQuizActivity SELF;
 
+    private boolean isFromOrientate;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -539,7 +541,7 @@ public class MathQuizActivity  extends AppCompatActivity {
 
     @Override
     protected void onStop() {
-        if (quizInProgress)
+        if (quizInProgress && !isFromOrientate)
             startService(new Intent(getApplicationContext(), NotificationService.class));
 
         super.onStop();
@@ -574,5 +576,11 @@ public class MathQuizActivity  extends AppCompatActivity {
         }
         else
             super.onBackPressed();  // Only return if no quiz is in progress
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        isFromOrientate = true;
     }
 }

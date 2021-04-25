@@ -35,7 +35,7 @@ public class QuizMasterApplication extends Application {
                         "option2 TEXT, option3 TEXT, option4 TEXT, answer TEXT )");
 
                 db.execSQL("CREATE TABLE IF NOT EXISTS tbl_quiz_result(" +
-                        "quiz_category TEXT, correct_answer INTEGER, elapsed_time REAL, score REAL, time_stamp REAL)");
+                        "quiz_category TEXT, correct_answer INTEGER, elapsed_time REAL, score INTEGER, time_stamp REAL)");
 
 
                 //insertQuiz();
@@ -241,7 +241,7 @@ public class QuizMasterApplication extends Application {
         double last_avg_score;
         int all_num_quiz_set;
         int all_num_correct;
-        int all_avg_elapsed_time;
+        String all_avg_elapsed_time;
         double all_avg_score;
 
         cursor_last.moveToFirst();
@@ -252,7 +252,7 @@ public class QuizMasterApplication extends Application {
         last_avg_score = cursor_last.getDouble(3);
         all_num_quiz_set = cursor_all.getInt(0);
         all_num_correct = cursor_all.getInt(1);
-        all_avg_elapsed_time = cursor_all.getInt(2);
+        all_avg_elapsed_time = displayElapsedTime(cursor_all.getInt(2));
         all_avg_score = cursor_all.getDouble(3);
 
         int last_ratio = 0;
@@ -298,7 +298,7 @@ public class QuizMasterApplication extends Application {
         return timeString;
     }
 
-    public void resetTableStats(){
+    public void resetQuizResult(){
         SQLiteDatabase db = helper.getWritableDatabase();
 
         db.execSQL("DELETE FROM tbl_quiz_result");

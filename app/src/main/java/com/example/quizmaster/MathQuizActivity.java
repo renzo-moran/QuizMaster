@@ -523,7 +523,8 @@ public class MathQuizActivity  extends AppCompatActivity {
 
         // Restore the previous state if the saveState preference is on or if we are NOT creating the activity
         // (for example, when doing orientation flip, or app deactivate/activate)
-        if (saveState || !creatingActivity) {
+        // but only if there is no quiz in progress - to avoid overwriting current variables of ongoing game
+        if (!quizInProgress && (saveState || !creatingActivity)) {
             // Restore the saved values
             btnTime.setText(sharedPref.getString("elapsed_time_hhmmss", getResources().getString(R.string.initial_time)));
             totalQuestions = sharedPref.getInt("total_questions", MAX_QUESTIONS);
@@ -531,9 +532,6 @@ public class MathQuizActivity  extends AppCompatActivity {
             int currentQuestion = sharedPref.getInt("current_question_number", 1);
             if (correctAnswers >= currentQuestion && currentQuestion > 0)
                 correctAnswers = currentQuestion-1;
-
-            // No need to read this item here as it is read in onCreate:
-            //long elapsedTime = sharedPref.getLong("elapsed_time", 0);
         }
 
         creatingActivity = false;

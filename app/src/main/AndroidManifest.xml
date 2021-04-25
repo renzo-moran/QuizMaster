@@ -13,6 +13,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
+        android:largeHeap="true"
         android:theme="@style/SplashScreenTheme">
         <receiver
             android:name=".quizReceiver"
@@ -32,10 +33,10 @@
             android:configChanges="keyboardHidden|orientation|screenSize" />
         <activity
             android:name=".MathQuizActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize" />
+            android:configChanges="keyboardHidden|screenSize" />
         <activity
             android:name=".HistoryQuizActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize" />
+            android:configChanges="keyboardHidden|screenSize" />
         <activity
             android:name=".SettingsActivity"
             android:label="@string/title_activity_settings"

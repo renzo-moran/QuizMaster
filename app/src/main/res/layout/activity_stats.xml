@@ -35,7 +35,7 @@
                     android:id="@+id/rdbGroup"
                     android:layout_width="250dp"
                     android:layout_height="wrap_content"
-                    android:gravity="center"
+                    android:gravity="center_horizontal"
                     android:orientation="horizontal">
 
                     <RadioButton

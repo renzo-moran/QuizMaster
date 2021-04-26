@@ -13,6 +13,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,6 +24,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.snackbar.Snackbar;
 
@@ -68,15 +70,13 @@ public class HistoryQuizActivity extends AppCompatActivity {
     private boolean backToMainScreen;  // Will be true at the end of a quiz to automatically return to main screen
 
     public HistoryQuizActivity SELF;
-
-    private boolean isFromOrientate;
+    private static boolean screenRotating;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         creatingActivity = true;
         SELF = this;
-        isFromOrientate = false;
 
         quizApplication = (QuizMasterApplication)getApplication();
         PreferenceManager.setDefaultValues(this, R.xml.root_preferences, false);
@@ -522,6 +522,15 @@ public class HistoryQuizActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
+        // If we ever need to check if onResume is called after a rotation just follow the commented code below
+//        if ( screenRotating ) {
+//            Toast.makeText(this, "Screen was rotated", Toast.LENGTH_SHORT).show();
+//            screenRotating = false;
+//        } else {
+//            Toast.makeText(this, "Screen was NOT rotated", Toast.LENGTH_SHORT).show();
+//        }
+
         // Restore the selected preferences from settings
         saveState = sharedPref.getBoolean("saveOnClose", false);
         darkTheme = sharedPref.getBoolean("darkTheme", false);
@@ -544,7 +553,8 @@ public class HistoryQuizActivity extends AppCompatActivity {
 
     @Override
     protected void onStop() {
-        if (quizInProgress && !isFromOrientate)
+        screenRotating = (getChangingConfigurations() & ActivityInfo.CONFIG_ORIENTATION)==ActivityInfo.CONFIG_ORIENTATION;
+        if (quizInProgress && !screenRotating)
             startService(new Intent(getApplicationContext(), QuizStopNotificationService.class));
 
         super.onStop();
@@ -582,8 +592,8 @@ public class HistoryQuizActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-        isFromOrientate = true;
+    protected void onDestroy() {
+        super.onDestroy();
+        screenRotating = (getChangingConfigurations() & ActivityInfo.CONFIG_ORIENTATION)==ActivityInfo.CONFIG_ORIENTATION;
     }
 }

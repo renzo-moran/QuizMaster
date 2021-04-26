@@ -1,6 +1,7 @@
 package com.example.quizmaster;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -11,6 +12,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -66,8 +68,7 @@ public class MathQuizActivity  extends AppCompatActivity {
     private boolean backToMainScreen;  // Will be true at the end of a quiz to automatically return to main screen
 
     public MathQuizActivity SELF;
-
-    private boolean isFromOrientate;
+    private static boolean screenRotating;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -541,8 +542,9 @@ public class MathQuizActivity  extends AppCompatActivity {
 
     @Override
     protected void onStop() {
-        if (quizInProgress && !isFromOrientate)
-            startService(new Intent(getApplicationContext(), NotificationService.class));
+        screenRotating = (getChangingConfigurations() & ActivityInfo.CONFIG_ORIENTATION)==ActivityInfo.CONFIG_ORIENTATION;
+        if (quizInProgress && !screenRotating)
+            startService(new Intent(getApplicationContext(), QuizStopNotificationService.class));
 
         super.onStop();
     }
@@ -579,8 +581,8 @@ public class MathQuizActivity  extends AppCompatActivity {
     }
 
     @Override
-    protected void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-        isFromOrientate = true;
+    protected void onDestroy() {
+        super.onDestroy();
+        screenRotating = (getChangingConfigurations() & ActivityInfo.CONFIG_ORIENTATION)==ActivityInfo.CONFIG_ORIENTATION;
     }
 }

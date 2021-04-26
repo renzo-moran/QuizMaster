@@ -16,7 +16,7 @@
         android:largeHeap="true"
         android:theme="@style/SplashScreenTheme">
         <receiver
-            android:name=".quizReceiver"
+            android:name=".QuizBroadcastReceiver"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
